@@ -1,0 +1,103 @@
+body {
+    margin: 0;
+    height: 100vh;
+    width: 100%;
+}
+
+#notify-container {
+    position: absolute;
+    height: 50%;
+    bottom: 0;
+    right: 0;
+    overflow: hidden;
+}
+
+#helpnotify-container {
+    position: absolute;
+    height: 50%;
+    width: 50%;
+    top: 0;
+    right: 0;
+    overflow: hidden;
+}
+
+.notify {
+    width: 350px;
+    height: auto;
+    background-color: black;
+    color: #ffffff;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    font-family: 'Noto Sans', sans-serif;
+    overflow: hidden;
+    display: flex;
+    margin-top: 20px;
+    align-items: center;
+    transition: 0.5s;
+}
+
+.hnotify {
+    position: absolute;
+    width: 350px;
+    height: auto;
+    background-color: black;
+    color: #ffffff;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    font-family: 'Noto Sans', sans-serif;
+    overflow: hidden;
+    display: flex;
+    margin-top: 20px;
+    align-items: center;
+    transition: 0.5s;
+    right: 0;
+}
+
+.notify-text {
+    width: 80%;
+    float: left;
+}
+
+.notify-title {
+    width: 90%;
+    text-align: center;
+    margin-left: 5%;
+    font-size: 18px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    border-bottom: 2px solid #5a6253;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notify-description {
+    width: 90%;
+    margin-left: 5%;
+    color: #5a6253;
+    overflow-wrap: break-word;
+    overflow: hidden;
+}
+
+.notify-img {
+    width: 20%;
+    margin-left: 5%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 50px;
+    float: left;
+}
+
+.notify-show {
+    animation: normal 500ms anim-notify;
+}
+
+@keyframes anim-notify {
+    0% {
+        transform: translateX(350px);
+    }
+    100% {
+        margin-left: translateX(0px);
+    }
+}
