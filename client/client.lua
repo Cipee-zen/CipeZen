@@ -32,7 +32,7 @@ AddEventHandler("InitializeCipeZenFrameWork",function(_cb,_cb2)
         while CipeZenEventsLoadCount ~= CipeZenEventsCount do
             Citizen.Wait(10)
         end
-        --local cz = CZDuplicateTable(CZ)
+        --local cz = CZDuplicateObject(CZ)
         CZ.Job = Job
         CZ.Permission = Permission
         cb(CZ)
@@ -197,20 +197,20 @@ function CZHelpNotify(_title,_description,_time)
             action = "helpnotify",
             title = _title,
             description = _description,
-            time = _time or 5000
+            time = _time or 100
         })
     end)
 end
 
-function CZDuplicateTable(table)
-    local newTable = {}
-    for k,v in pairs(table) do
-        newTable[k] = v
+function CZDuplicateObject(object)
+    local newObject = {}
+    for k,v in pairs(object) do
+        newObject[k] = v
     end
-    return newTable
+    return newObject
 end
 
-CZ.DuplicateTable = CZDuplicateTable
+CZ.DuplicateObject = CZDuplicateObject
 CipeZenEventsLoadCount = CipeZenEventsLoadCount + 1
 CZ.Try = CZTry
 CipeZenEventsLoadCount = CipeZenEventsLoadCount + 1
@@ -414,6 +414,8 @@ Citizen.CreateThread(function()
 				local formattCoords = {x = coords.x, y = coords.y, z = coords.z, h = heading}
 				TriggerServerEvent('CipeZen:updatePlayerCoords', formattCoords)
 			end
+        else
+            CZ.PlayerPedId = PlayerPedId()
         end
     end)
 end)

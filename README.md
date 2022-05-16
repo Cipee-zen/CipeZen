@@ -36,6 +36,34 @@ CipeZen is a useful framework for optimizing and facilitating code creation
   
     TriggerEvent("InitializeCipeZenFrameWork",function(cz) CZ = cz end)
     ```
+- ### Variables
+  Variable | Type | Description
+  ------------ | ------------- | -------------
+  CZ.PlayerId | `int` | the client id of the player
+  CZ.PlayerPedId | `int` | the ped id of the player
+  CZ.PlayerServerId | `int` | the server id of the player
+  CZ.PlayerName | `string` | the steam name of the player
+  CZ.Job | `object` | returns all information about the player's job
+  CZ.Idenrifiers | `object` | returns all player identifiers
+  - ### Job
+    Variable | Type | Description
+    ------------ | ------------- | -------------
+    JobName | `string` | job name
+    JobLabel | `string` |  job label
+    Grade | `int` | the grade of job
+    GradeLabel | `string` | the grade label
+    GradeName | `string` | the grade name
+
+  - #### Identifiers
+    Variable | Type | Description
+    ------------ | ------------- | -------------
+    steam | `string` | steam id 
+    license | `string` | rockstar license
+    xbl | `string` | xbl id
+    ip | `string` | ip from client
+    discord | `string` | discord id
+    live | `string` | live id
+
 ## Client
 
 - ### CreateThread
@@ -87,6 +115,126 @@ CipeZen is a useful framework for optimizing and facilitating code creation
     -- your code 
   end,...)
   ```
+- ### ControlPressed
+  >this function creates a callback when the control is pressed
+
+  ***with this method the callback is activated only when the control is pressed,find [here all key](#allkey) or check the [Fivem Reference](https://docs.fivem.net/docs/game-references/controls/)***
+
+  Parameter | Type | Description
+  ------------ | ------------- | -------------
+  key | `string` or `int` | the key to handle
+  callback | `function` | the callback
+
+  ```lua
+  CZ.ControlPressed("F2" || 289 ,function()
+    -- your code
+  end)
+  ```
+
+- ### DrawMarker
+  >this feature makes creating markers much easier
+
+  ***remember that you can also not specify all the marker data, there are the default ones,check the [Fivem marker reference](https://docs.fivem.net/docs/game-references/markers/)***
+
+  Parameter | Type | Description
+  ------------ | ------------- | -------------
+  options | `object` | the marker options, **pos , color ecc...**
+  callback | `function` | **[OPTIONAL]** if set, a callback is created every 1 milliseconds
+
+  - options
+    Parameter | Type | Default |Description
+    ------------ | ------------- | ------------- | -------------
+    type    | `int`   | **2** | The marker type to draw
+    posX    | `float` | **0.0** | The X coordinate to draw the marker at
+    posY    | `float` | **0.0** | The Y coordinate to draw the marker at
+    posZ    | `float` | **0.0** | The Z coordinate to draw the marker at
+    dirX    | `float` | **0.0** | The X component of the direction vector for the marker
+    dirY    | `float` | **0.0** | The Y component of the direction vector for the marker
+    dirZ    | `float` | **0.0** | The Z component of the direction vector for the marker
+    rotX    | `float` | **0.0** | The X rotation for the marker. Only used if the direction vector is **0.0**
+    rotY    | `float` | **0.0** | The Y rotation for the marker. Only used if the direction vector is **0.0**
+    rotZ    | `float` | **0.0** | The Z rotation for the marker. Only used if the direction vector is **0.0**
+    scaleX  | `float` | **1.0** | The scale for the marker on the X axis
+    scaleY  | `float` | **1.0** | The scale for the marker on the Y axis
+    scaleZ  | `float` | **1.0** | The scale for the marker on the Z axis
+    red     | `int`   | **200** | The red component of the marker color, on a scale from 0-255
+    green   | `int`   | **200** | The green component of the marker color, on a scale from 0-255
+    blue    | `int`   | **200** | The blue component of the marker color, on a scale from 0-255
+    alpha   | `int`  | **200** | The alpha component of the marker color, on a scale from 0-255
+    bobUpAndDown| `bool` | **false** | Whether or not the marker should slowly animate up/down
+    faceCamera  | `bool` | **false** | Whether the marker should be a 'billboard', as in, should constantly face the camera
+    p19  | `int` | **2** | Typically set to 2. Does not seem to matter directly
+    rotate  | `bool` | **false** | Rotations only apply to the heading
+    textureDict  | `string` | **nil** |  A texture dictionary to draw the marker
+    textureName  | `string` | **nil** |  A texture name in textureDict to draw
+    drawOnEnts  | `bool` | **false** |  Whether or not the marker should draw on intersecting entities
+  
+  ```lua
+  local pos = GetEntityCoords(PlayerPedId())
+  CZ.DrawMarker({type = 1,posX = pos.x,posY = pos.y,posZ = pos.z },function() 
+    -- your code to execute every 1 milliseconds. [OPTIONAL] remove the function if you don't use it
+  end)
+  ```
+
+<!--
+- ### Menu
+  >this menu allows you to create multiple buttons with a callback at the interaction
+
+  ***this function allows you to create a menu that is still in beta,install [c_menu_z](https://github.com/Cipee-zen/c_menu_z)***
+
+  Parameter | Type | Description
+  ------------ | ------------- | -------------
+  name | `string` | the name of the menu must be unique
+  data | `object` | the preferences of the menu
+  callback | `function(Value,Close)` | the callback at the interaction,return the **button value** and the **close function**
+  callback2 | `function(Close)` | the callback when pressing the close menu button,return **close function**
+
+  ```lua
+  local buttons = {
+    {value = "dog",label = "Dog"},
+  }
+  CZ.Menu("name",{
+    Title = "Dog menu"
+    Buttons = buttons,
+  },function(Value,Close)
+    if Value == "dog" then
+      print("Bauuu !")
+      Close()
+    end
+  end,function(Close)
+    Close() -- on press the control to close the menu close it,
+  end)
+  ```
+-->
+- ### Notify
+
+  >this function allows you to create a notification of a specific duration
+
+  ***remember not to call this function too many times per second***
+  Parameter | Type | Description
+  ------------ | ------------- | -------------
+  title | `string` | the title of the notification
+  description | `string` | the description of the notification
+  time | `int` | **[OPTIONAL]** how long the notification is displayed
+
+  ```lua
+    CZ.Notify("title","description",5000)
+  ```
+- ### HelpNotify
+
+  >this function allows you to create a notification of a specific duration
+
+  ***remember if you want to repeat this function many times for second, don't add the time variable***
+  Parameter | Type | Description
+  ------------ | ------------- | -------------
+  title | `string` | the title of the notification
+  description | `string` | the description of the notification
+  time | `int` | **[OPTIONAL]** how long the notification is displayed
+
+  ```lua
+    CZ.HelpNotify("title","description",5000)
+  ```
+
 ## Server
 
 - ### <div id="s-registercallback">RegisterCallback</div>᲼
@@ -121,4 +269,93 @@ CipeZen is a useful framework for optimizing and facilitating code creation
   CZ.TrggerCallback("name",2,function(args)
     -- your code 
   end,...)
+  ```
+
+- ### GetPlayerFromId
+  >returns all server player data
+
+  ***look [here](#use-czplayer) to see how to use the CZPlayer object***
+
+  Parameter | Type | Description
+  ------------ | ------------- | -------------
+  id | `int` or `string` | player server id
+
+  ```lua
+  local CZPlayer = CZ.GetPlayerFromId(2)
+  ```
+
+- ### Use CZPlayer
+  >CZPlayer is the object that is returned by the function [GetPlayerFromId](#getplayerfromid)
+
+  ***remember that CZPlayer contains all the server side data of the player***
+  Parameter | Type | Description
+  ------------ | ------------- | -------------
+  Identifiers | `object` | returns all player identifiers, [info](#identifiers)
+  Id | `int` | return the player server id
+  Name | `string` | return the player steam name
+  Ped | `int` | return the player ped id
+  Job | `object` | returns all information about the player's job, [info](#job)
+  Permission | `string` | the name of player permissions
+  AddUniquepItem | `function(id,uniqueid)` | the name of player permissions
+
+## Global
+
+- ### Print
+  >this function allows you to print objects or simple variables in the console in a more comfortable way to read
+
+  ***remember that you can only print one object or variable at a time***
+
+  Parameter | Type | Description
+  ------------ | ------------- | -------------
+  data | `all` | the object or variable to print
+
+  ```lua
+  local object = {dog = "bau"}
+  local dog = "bau"
+
+  CZ.Print(object)
+  CZ.Print(dog)
+  ```
+- ### DuplicateObject
+  >this function returns a duplicate of the passed object
+
+  ***remember this function only duplicates objects no arrays or variables***
+
+  Parameter | Type | Description
+  ------------ | ------------- | -------------
+  object | `object` | the object to duplicate
+
+  ```lua
+  local object = {dog = "bau"}
+
+  local duplicateObject = CZ.DuplicateObject(object)
+  ```
+- ### Try
+  >this function is for try a function and if get error catch it and trigger callback else execute the function
+
+  ***this is a try and catch beta systema in lua***
+
+  Parameter | Type | Description
+  ------------ | ------------- | -------------
+  try | `function` | the function to be tested
+  catch | `function(error)` | the function that catches the error and returns it
+
+  ```lua
+  function test()
+    local c = dog -- dog is not defined
+  end
+
+  CZ.Try(test,function(error)
+    if error then
+      print(error)
+    end
+  end)
+  ```
+- ### GetNearestPlayer
+  >return the player closest to you
+
+  ***remember that it returns both the coordinates and the player id***
+
+   ```lua
+  local player,distance = CZ.GetNearestPlayer()
   ```

@@ -145,6 +145,14 @@ function CZTriggerCallback(name,_to,cb,...)
     end)
 end
 
+function CZTry(access,negate)
+    local status, result = pcall(access)
+    if not status then
+        negate(result)
+    end
+    return result
+end
+
 function CZGetIdentifiers(id)
     local identifiers = {}
     for i = 0,7 do
@@ -417,6 +425,7 @@ CZ.GetItem = CZGetItem
 CZ.Print = CZPrint
 CZ.DuplicateTable = CZDuplicateTable
 CZ.GetPlayerFromId = CZGetPlayerFromId
+CZ.Try = CZTry
 
 CZRegisterCallback("cz:getPlayerData",function(source,cb)
     cb(CZGetPlayerFromId(source))
