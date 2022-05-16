@@ -45,7 +45,7 @@ CipeZen is a useful framework for optimizing and facilitating code creation
   CZ.PlayerName | `string` | the steam name of the player
   CZ.Job | `object` | returns all information about the player's job
   CZ.Idenrifiers | `object` | returns all player identifiers
-  - ### Job
+  - #### Job
     Variable | Type | Description
     ------------ | ------------- | -------------
     JobName | `string` | job name
