@@ -218,7 +218,7 @@ CipeZen is a useful framework for optimizing and facilitating code creation
   time | `int` | **[OPTIONAL]** how long the notification is displayed
 
   ```lua
-    CZ.Notify("title","description",5000)
+  CZ.Notify("title","description",5000)
   ```
 - ### HelpNotify
 
@@ -232,7 +232,7 @@ CipeZen is a useful framework for optimizing and facilitating code creation
   time | `int` | **[OPTIONAL]** how long the notification is displayed
 
   ```lua
-    CZ.HelpNotify("title","description",5000)
+  CZ.HelpNotify("title","description",5000)
   ```
 
 ## Server
@@ -283,12 +283,63 @@ CipeZen is a useful framework for optimizing and facilitating code creation
   ```lua
   local CZPlayer = CZ.GetPlayerFromId(2)
   ```
+- ### GetUniqueItem
+  >this function returns the unique item id
+
+  ***if the unique item does not exist it will return nil***
+  Parameter | Type | Description
+  ------------ | ------------- | -------------
+  uniqueid | `string` | the unique id to call the item
+
+  ```lua
+  local uniqueItem = CZ.GetUniqueItem("uniqueid")
+  ```
+- ### GetIdentifiers
+  >this function returns all the identifiers of the player
+
+  ***remember to specify the id of the player to take the identifiers, [info](#identifiers)***
+  Parameter | Type | Description
+  ------------ | ------------- | -------------
+  id | `string` or `int` | the id of the player to take the identifiers
+
+  ```lua
+  local identifiers = CZ.GetIdentifiers("id" || 2)
+  ```
+- ### GetItem
+  >this function returns the item from the name
+
+  ***remember that it will only return general item data not player specific data***
+  Parameter | Type | Description
+  ------------ | ------------- | -------------
+  name | `string` | the name of the item
+
+  ```lua
+  local item = CZ.GetItem("name")
+  ``` 
+- ### CreateUniqueItem
+  >this function allows you to create a unique id
+
+  ***remember not to use the same ids with other unique items***
+  Parameter | Type | Description
+  ------------ | ------------- | -------------
+  callback | `function` | the callback that returns the unique id
+  name | `string` | the uniqueid of the item
+  label | `string` | the label of the item
+  description | `string` | the description of the item
+  other | `object` | an object that contains custom data
+  owner | `string` | the license of the owner of the item
+
+  ```lua
+  CZ.CreateUniqueItem(function(uniqueid)
+    -- your code
+  end,"name","label","description","other","owner")
+  ```
 
 - ### Use CZPlayer
   >CZPlayer is the object that is returned by the function [GetPlayerFromId](#getplayerfromid)
 
   ***remember that CZPlayer contains all the server side data of the player***
-  Parameter | Type | Description
+  Variables | Type | Description
   ------------ | ------------- | -------------
   Identifiers | `object` | returns all player identifiers, [info](#identifiers)
   Id | `int` | return the player server id
@@ -296,7 +347,91 @@ CipeZen is a useful framework for optimizing and facilitating code creation
   Ped | `int` | return the player ped id
   Job | `object` | returns all information about the player's job, [info](#job)
   Permission | `string` | the name of player permissions
-  AddUniquepItem | `function(id,uniqueid)` | the name of player permissions
+  AddMoney | `function(money,count)` | this function add money ,[info](#addmoney)
+  RemoveMoney | `function(money,count)` | this function remove money ,[info](#removemoney)
+  AddUniquepItem | `function(uniqueid)` | this function add a unique item to the player's inventory,[info](#adduniqueitem)
+  RemoveUniqueItem | `function(uniqueid)` | this function remove a unique item in the player's inventory ,[info](#removeuniqueitem)
+  AddItem | `function(name,count)` | this function add an item to the player's inventory, [info](#additem) 
+  RemoveItem | `function(name,count)` | this function remove an item to the player's inventory, [info]() 
+  GetItem | `function(name)` | this function returns the item from the name, [info](#getitem)
+
+  - #### AddMoney
+    >look [here](#use-czplayer) to learn more
+
+    Parameter | Type | Description
+    ------------ | ------------- | -------------
+    money | `string` | money account name, **money, bankmoney, dirtymoney**
+    count | `int` | the count to be added
+
+    ```lua
+    local added = CZPlayer.AddMoney("money",1000)
+    ```
+  - #### RemoveMoney
+    >look [here](#use-czplayer) to learn more
+
+    Parameter | Type | Description
+    ------------ | ------------- | -------------
+    money | `string` | money account name, **money, bankmoney, dirtymoney**
+    count | `int` | the count to be removed
+
+    ```lua
+    local removed = CZPlayer.RemoveMoney("money",1000)
+    ``` 
+  - #### AddUniqueItem
+    >look [here](#use-czplayer) to learn more
+
+    Parameter | Type | Description
+    ------------ | ------------- | -------------
+    uniqueid | `string` | the unique id to call the item
+
+    ```lua
+    local notExist = CZPlayer.AddUniqueItem("uniqueid")
+    ``` 
+  - #### RemoveUniqueItem
+    >look [here](#use-czplayer) to learn more
+
+    Parameter | Type | Description
+    ------------ | ------------- | -------------
+    uniqueid | `string` | the unique id to call the item
+
+    ```lua
+    local exist = CZPlayer.RemoveUniqueItem("uniqueid")
+    ``` 
+  - #### AddItem
+    >look [here](#use-czplayer) to learn more
+
+    Parameter | Type | Description
+    ------------ | ------------- | -------------
+    name | `string` | the name of the item
+    count | `string` | the count to be added
+
+    ```lua
+    local added = CZPlayer.AddItem("name",10)
+    ``` 
+  - #### RemoveItem
+
+    >look [here](#use-czplayer) to learn more
+
+    Parameter | Type | Description
+    ------------ | ------------- | -------------
+    name | `string` | the name of the item
+    count | `string` | the count to be removed
+
+    ```lua
+    local removed = CZPlayer.RemoveItem("name",10)
+    ``` 
+  - #### GetItem
+
+    >look [here](#use-czplayer) to learn more
+
+    Parameter | Type | Description
+    ------------ | ------------- | -------------
+    name | `string` | the name of the item
+
+    ```lua
+    local item = CZPlayer.GetItem("name")
+    ``` 
+    
 
 ## Global
 

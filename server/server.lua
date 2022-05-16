@@ -6,7 +6,7 @@ Config.SpawnPosition = {x =448.7125,y = -1021.1075,z = 28.4266,h = 279.6156}
 CZServerCallBack = {}
 CipeZenPlayers = {}
 CipeZenItems = {}
-CipeZenUniquepItems = {}
+CipeZenUniqueItems = {}
 
 RegisterServerEvent("InitializeCipeZenFrameWork")
 RegisterServerEvent("CZ:requestExistCallback")
@@ -181,13 +181,13 @@ function CipeZenLoadPlayer(id)
         player.LastPosition = json.decode(playerData[1].position)
         player.Permission = playerData[1].permission
         for k,v in pairs(json.decode(playerData[1].inventory)) do
-            if v.uniquepitem then
-                if CipeZenUniquepItems[tostring(v.uniquepitem)] then
-                    local item = CZDuplicateTable(CipeZenUniquepItems[tostring(v.uniquepitem)])
+            if v.uniqueitem then
+                if CipeZenUniqueItems[tostring(v.uniqueitem)] then
+                    local item = CZDuplicateTable(CipeZenUniqueItems[tostring(v.uniqueitem)])
                     item.count = 1
                     item.limit = 1
                     item.other = json.decode(item.other)
-                    player.Inventory[tostring(v.uniquepitem)] = item
+                    player.Inventory[tostring(v.uniqueitem)] = item
                 end
             else
                 if CipeZenItems[v.name] then
@@ -224,6 +224,35 @@ end
 function CipeZenGetPlayerInventory(id)
 end
 
+function CipeZenAddMoney(id,money,count)
+    local license = CZGetIdentifiers(id).license
+    if not CipeZenPlayers[license].Money then
+        CipeZenPlayers[license].Money = {money = 0,bankmoney = 0,dirtymoney = 0}
+    end
+    CipeZenPlayers[license].Money[money] = CipeZenPlayers[license].Money[money] + count
+    MySQL.Async.execute('UPDATE players SET money = @money WHERE rockstarlicense = @rockstarlicense', {
+        ["@rockstarlicense"] = license,
+        ["@money"] = json.encode(CipeZenPlayers[license].Money)
+    })
+    return true
+end
+
+function CipeZenRemoveMoney(id,money,count)
+    local license = CZGetIdentifiers(id).license
+    if not CipeZenPlayers[license].Money then
+        CipeZenPlayers[license].Money = {money = 0,bankmoney = 0,dirtymoney = 0}
+    end
+    CipeZenPlayers[license].Money[money] = CipeZenPlayers[license].Money[money] - count
+    if CipeZenPlayers[license].Money[money] < 0 then
+        CipeZenPlayers[license].Money[money] = 0
+    end
+    MySQL.Async.execute('UPDATE players SET money = @money WHERE rockstarlicense = @rockstarlicense', {
+        ["@rockstarlicense"] = license,
+        ["@money"] = json.encode(CipeZenPlayers[license].Money)
+    })
+    return true
+end
+
 function CZGetPlayerFromId(_id)
     if tonumber(_id) and GetPlayerName(tonumber(_id)) then
         local player = {}
@@ -234,27 +263,34 @@ function CZGetPlayerFromId(_id)
         player.Ped = GetPlayerPed(id)
         player.Job = nil
         player.Inventory = {}
+        player.Money = {money = 0,bankmoney = 0,dirtymoney = 0}
         player.Permission = "player"
-        player.AddUniquepItem = function (uniquepid)
-        return CipeZenAddUniquepItem(_id,uniquepid)
+        player.AddMoney = function (money,count)
+            return CipeZenAddMoney(_id,money,count)
         end
-        player.RemoveUniquepItem = function (uniquepid)
-        return CipeZenRemoveUniquepItem(_id,uniquepid)
+        player.RemoveMoney = function (money,count)
+            return CipeZenRemoveMoney(_id,money,count)
+        end
+        player.AddUniqueItem = function (uniqueid)
+            return CipeZenAddUniqueItem(_id,uniqueid)
+        end
+        player.RemoveUniqueItem = function (uniqueid)
+            return CipeZenRemoveUniqueItem(_id,uniqueid)
         end
         player.AddItem = function (name,count)
-        return CipeZenAddItem(_id,name,count)
+            return CipeZenAddItem(_id,name,count)
         end
         player.RemoveItem = function (name,count)
-        return CipeZenRemoveItem(_id,name,count)
+            return CipeZenRemoveItem(_id,name,count)
         end
         player.GetItem = function (name)
-        return player.Inventory[name] or nil
-        end       
+            return player.Inventory[name] or nil
+        end
         while not CipeZenPlayers[player.Identifiers.license] do
             Wait(10)
         end
         if CipeZenPlayers[player.Identifiers.license] then
-
+            player.Money = CipeZenPlayers[player.Identifiers.license].Money
             player.Job = CipeZenPlayers[player.Identifiers.license].Job
             player.Inventory = CipeZenPlayers[player.Identifiers.license].Inventory
             player.Permission = CipeZenPlayers[player.Identifiers.license].Permission
@@ -298,15 +334,15 @@ function CZGetItem(name)
     end
 end
 
-function CZCreateUniquepItem(cb,name,label,description,other,owner)
-    MySQL.Async.execute('INSERT INTO uniquepitems (name,label,description,other,owner) VALUES(@name,@label,@description,@other,@owner)',{
+function CZCreateUniqueItem(cb,name,label,description,other,owner)
+    MySQL.Async.execute('INSERT INTO uniqueitems (name,label,description,other,owner) VALUES(@name,@label,@description,@other,@owner)',{
         ['@name'] = name,
         ['@label'] = label,
         ['@description'] = description or "",
         ['@other'] = json.encode(other) or nil,
         ['@owner'] = owner or nil,
     }, function (result2)
-        local id = MySQL.Sync.fetchAll('SELECT id AS id FROM uniquepitems')
+        local id = MySQL.Sync.fetchAll('SELECT id AS id FROM uniqueitems')
         cb(id[#id].id)
     end)
 end
@@ -426,6 +462,7 @@ CZ.Print = CZPrint
 CZ.DuplicateTable = CZDuplicateTable
 CZ.GetPlayerFromId = CZGetPlayerFromId
 CZ.Try = CZTry
+CZ.CreateUniqueItem = CZCreateUniqueItem
 
 CZRegisterCallback("cz:getPlayerData",function(source,cb)
     cb(CZGetPlayerFromId(source))
