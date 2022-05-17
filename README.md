@@ -39,12 +39,12 @@
 - ### Variables
   Variable | Type | Description
   ------------ | ------------- | -------------
-  CZ.PlayerId | `int` | the client id of the player
-  CZ.PlayerPedId | `int` | the ped id of the player
-  CZ.PlayerServerId | `int` | the server id of the player
-  CZ.PlayerName | `string` | the steam name of the player
-  CZ.Job | `object` | returns all information about the player's job
-  CZ.Idenrifiers | `object` | returns all player identifiers
+  PlayerId | `int` | the client id of the player
+  PlayerPedId | `int` | the ped id of the player
+  PlayerServerId | `int` | the server id of the player
+  PlayerName | `string` | the steam name of the player
+  Job | `object` | returns all information about the player's job
+  Idenrifiers | `object` | returns all player identifiers
   - #### Job
     Variable | Type | Description
     ------------ | ------------- | -------------
