@@ -17,7 +17,3 @@ files {
     "html/styles.css",
     "html/main.js",
 }
-
-dependencies {
-    "c_menu_z",
-}
