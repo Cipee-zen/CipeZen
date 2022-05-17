@@ -1,5 +1,5 @@
 # CipeZen
-    CipeZen is a useful framework for optimizing and facilitating code creation
+    CipeZen is a useful framework for optimizing and facilitating code creation.
     CipeZen is in beta let me know for bugs or improvements
 ## Usage
 - ### Initialize
