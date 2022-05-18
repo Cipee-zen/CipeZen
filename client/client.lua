@@ -374,11 +374,11 @@ function CZControlPressed(_key,cb)
 end
 
 function CZMenu(name,data,cb,cb1,cb2)
-    TriggerEvent("cz_menu:openMenu",name,data,cb,cb1,cb2)
+    TriggerEvent("c_menu_z:openMenu",name,data,cb,cb1,cb2)
 end
 
 function CZCloseAllMenu()
-    TriggerEvent("cz_menu:closeAllMenu")
+    TriggerEvent("c_menu_z:closeAllMenu")
 end
 
 

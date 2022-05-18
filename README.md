@@ -1,6 +1,11 @@
 # CipeZen
     CipeZen is a useful framework for optimizing and facilitating code creation.
-    CipeZen is in beta let me know for bugs or improvements
+  
+    CipeZen is in beta let me know for bugs or improvements.
+
+## Requirements
+  - [c_menu_z](https://github.com/Cipee-zen/c_menu_z) - version v1
+
 ## Usage
 - ### Initialize
   - Client
