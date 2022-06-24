@@ -131,7 +131,7 @@
   callback | `function` | the callback
 
   ```lua
-  CZ.ControlPressed("F2" || 289 ,function()
+  CZ.ControlPressed("F2" or 289 ,function()
     -- your code
   end)
   ```
