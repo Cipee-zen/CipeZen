@@ -239,6 +239,14 @@
   ```lua
   CZ.HelpNotify("title","description",5000)
   ```
+- ### GetNearestPlayer
+  >return the player closest to you
+
+  ***remember that it returns both the coordinates and the player id***
+
+   ```lua
+  local player,distance = CZ.GetNearestPlayer()
+  ```
 
 ## Server
 
@@ -490,12 +498,4 @@
       print(error)
     end
   end)
-  ```
-- ### GetNearestPlayer
-  >return the player closest to you
-
-  ***remember that it returns both the coordinates and the player id***
-
-   ```lua
-  local player,distance = CZ.GetNearestPlayer()
   ```
