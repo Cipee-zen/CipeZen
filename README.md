@@ -135,7 +135,7 @@
   callback | `function` | the callback
 
   ```lua
-  CZ.ControlPressed("F2" || 289 ,function()
+  CZ.ControlPressed("F2" or 289 ,function()
     -- your code
   end)
   ```
@@ -242,6 +242,14 @@
 
   ```lua
   CZ.HelpNotify("title","description",5000)
+  ```
+- ### GetNearestPlayer
+  >return the player closest to you
+
+  ***remember that it returns both the coordinates and the player id***
+
+   ```lua
+  local player,distance = CZ.GetNearestPlayer()
   ```
 
 ## Server
@@ -355,6 +363,7 @@
   Name | `string` | return the player steam name
   Ped | `int` | return the player ped id
   Job | `object` | returns all information about the player's job, [info](#job)
+  Inventory | `object` | returns all items in the inventory
   Permission | `string` | the name of player permissions
   AddMoney | `function(money,count)` | this function add money ,[info](#addmoney)
   RemoveMoney | `function(money,count)` | this function remove money ,[info](#removemoney)
@@ -494,12 +503,4 @@
       print(error)
     end
   end)
-  ```
-- ### GetNearestPlayer
-  >return the player closest to you
-
-  ***remember that it returns both the coordinates and the player id***
-
-   ```lua
-  local player,distance = CZ.GetNearestPlayer()
   ```

@@ -23,5 +23,5 @@ files {
 
 dependencies {
     "c_menu_z",
-    "mysql-async"
+    "mysql-async",
 }
