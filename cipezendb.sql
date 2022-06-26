@@ -49,8 +49,8 @@ CREATE TABLE IF NOT EXISTS `players` (
 /*!40000 ALTER TABLE `players` DISABLE KEYS */;
 /*!40000 ALTER TABLE `players` ENABLE KEYS */;
 
--- Dump della struttura di tabella cipezen.uniquepitems
-CREATE TABLE IF NOT EXISTS `uniquepitems` (
+-- Dump della struttura di tabella cipezen.uniqueitems
+CREATE TABLE IF NOT EXISTS `uniqueitems` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) DEFAULT NULL,
   `label` varchar(50) DEFAULT NULL,
@@ -61,9 +61,9 @@ CREATE TABLE IF NOT EXISTS `uniquepitems` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4;
 
--- Dump dei dati della tabella cipezen.uniquepitems: ~1 rows (circa)
-/*!40000 ALTER TABLE `uniquepitems` DISABLE KEYS */;
-/*!40000 ALTER TABLE `uniquepitems` ENABLE KEYS */;
+-- Dump dei dati della tabella cipezen.uniqueitems: ~1 rows (circa)
+/*!40000 ALTER TABLE `uniqueitems` DISABLE KEYS */;
+/*!40000 ALTER TABLE `uniqueitems` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;

@@ -1,11 +1,15 @@
 # CipeZen
-    CipeZen is a useful framework for optimizing and facilitating code creation.
+    CipeZen is built using the ESX usage framework,it allows the optimization and simplification of resource development
   
-    CipeZen is in beta let me know for bugs or improvements.
+    ⚒️CipeZen is in beta let me know for bugs or improvements.⚒️
 
 ## Requirements
-  - [c_menu_z](https://github.com/Cipee-zen/c_menu_z) - version v1
+  - [c_menu_z](https://github.com/Cipee-zen/c_menu_z) - v1
+  - [mysql-async](https://github.com/brouznouf/fivem-mysql-async) - v3.3.2
+## SecureResource
+    SecureResource is used to secure the client side of resources from damping, to start securing a script click 'start.bat' in the 'SecureConfig' folder
 
+    ⚒️SecureResource is in beta let me know for bugs or improvements.⚒️
 ## Usage
 - ### Initialize
   - Client

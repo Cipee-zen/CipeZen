@@ -100,7 +100,7 @@ AddEventHandler("CZ:requestExistCallback", function(_idcallback,_callbackname,..
     end)
 end)
 AddEventHandler("CipeZen:spawnVehicleOnPlayer", function (model)
-    local ped = GetPlayerPed(-1)
+    local ped = PlayerPedId()
     if IsModelInCdimage(model) then
         RequestModel(model)
         while not HasModelLoaded(model) do
@@ -383,11 +383,11 @@ end
 
 
 Citizen.CreateThread(function()
-    while GetEntityCoords(GetPlayerPed(-1)) == vector3(0,0,0) or GetEntityCoords(GetPlayerPed(-1)) == vector3(0,0,1)  do
+    while GetEntityCoords(PlayerPedId()) == vector3(0,0,0) or GetEntityCoords(PlayerPedId()) == vector3(0,0,1)  do
         Citizen.Wait(100)
     end
     Wait(1000)
-    previousCoords = GetEntityCoords(GetPlayerPed(-1))
+    previousCoords = GetEntityCoords(PlayerPedId())
     TriggerServerEvent("CipeZen:playerLoad")
     CZ.PlayerPedId = PlayerPedId()
     CZ.PlayerId = PlayerId()

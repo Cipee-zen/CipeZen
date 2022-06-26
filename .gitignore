@@ -1,0 +1,4 @@
+.vscode/
+SecureResource/module/*
+
+!SecureResource/module/.gitkeep 

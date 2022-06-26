@@ -1,5 +1,6 @@
-CZ = {}
 local path = GetResourcePath(GetCurrentResourceName())
+local CZPlayersLoad = {}
+CZ = {}
 Config = {}
 Config.SpawnPosition = {x =448.7125,y = -1021.1075,z = 28.4266,h = 279.6156}
 
@@ -45,10 +46,19 @@ AddEventHandler("CZ:requestExistCallback", function(_idcallback,callbackname,...
     end
 end)
 AddEventHandler("CipeZen:playerLoad",function()
-    local source = source
-    MySQL.ready(function ()
-        CipeZenLoadPlayer(source)
-    end)
+    local license = CZGetIdentifiers(source).license
+    if not CZPlayersLoad[license] then
+        CZPlayersLoad[license] = true
+        local source = source
+        MySQL.ready(function ()
+            CipeZenLoadPlayer(source)
+            TriggerEvent("CZ:playerLoad", source)
+        end)
+    else
+        print("The player"..GetPlayerName(source).." try to trigger another time the player load event")
+        CZPrint(CZGetIdentifiers(source))
+        DropPlayer(source, "You try to trigger another time the player load event")
+    end
 end)
 AddEventHandler("CipeZen:updatePlayerCoords",function(coords)
     MySQL.Async.execute('UPDATE players SET position = @position WHERE rockstarlicense = @rockstarlicense', {
@@ -57,6 +67,11 @@ AddEventHandler("CipeZen:updatePlayerCoords",function(coords)
     })
 end)
 AddEventHandler("CZ:addInventoryItem",function (id,name,count)
+end)
+AddEventHandler("playerDropped",function(reason)
+    local source = source
+    local license = CZGetIdentifiers(source).license
+    CZPlayersLoad[license] = nil
 end)
 
 function CZDuplicateTable(table)
@@ -69,7 +84,6 @@ end
 
 function CZPrint(a)
     local text = ""
-    local cane = true
     if a then
         if type(a) == "number" or  type(a) == "string" then
             text = "["..a.."]"
@@ -285,7 +299,7 @@ function CZGetPlayerFromId(_id)
         end
         player.GetItem = function (name)
             return player.Inventory[name] or nil
-        end
+        end 
         while not CipeZenPlayers[player.Identifiers.license] do
             Wait(10)
         end
@@ -414,7 +428,6 @@ function CipeZenAddUniqueItem(id,uniqueitem)
         local item = CZGetUniqueItem(uniqueitem)
         item.count = 1
         player.Inventory[tid] = item
-        CZ.Print(player.Inventory[tid])
         MySQL.Async.execute('UPDATE players SET inventory = @inventory WHERE rockstarlicense = @rockstarlicense', {
             ["@rockstarlicense"] = license,
             ["@inventory"] = json.encode(player.Inventory)
