@@ -351,6 +351,17 @@
     -- your code
   end,"name","label","description","other","owner")
   ```
+- ### GetPlayerIdFromLicense
+  >this function allows you to return the player id from the license
+
+  ***remember if the player is not online it will return nil***
+  Parameter | Type | Description
+  ------------ | ------------- | -------------
+  license | `string` | the rockstar license
+
+  ```lua
+  local playerid = CZ.GetPlayerIdFromLicense("license")
+  ```
 
 - ### Use CZPlayer
   >CZPlayer is the object that is returned by the function [GetPlayerFromId](#getplayerfromid)

@@ -195,19 +195,18 @@ function CipeZenLoadPlayer(id)
         player.LastPosition = json.decode(playerData[1].position)
         player.Permission = playerData[1].permission
         for k,v in pairs(json.decode(playerData[1].inventory)) do
-            if v.uniqueitem then
-                if CipeZenUniqueItems[tostring(v.uniqueitem)] then
-                    local item = CZDuplicateTable(CipeZenUniqueItems[tostring(v.uniqueitem)])
+            if v.id then
+                if CipeZenUniqueItems[tostring(v.id)] then
+                    local item = CZDuplicateTable(CipeZenUniqueItems[tostring(v.id)])
                     item.count = 1
                     item.limit = 1
-                    item.other = json.decode(item.other)
-                    player.Inventory[tostring(v.uniqueitem)] = item
+                    player.Inventory[tostring(v.id)] = item
                 end
             else
                 if CipeZenItems[v.name] then
                     local item = CZDuplicateTable(CipeZenItems[v.name])
                     item.count = v.count
-                    item.other = json.decode(item.other)
+                    item.other = item.other
                     player.Inventory[v.name] = item
                 end
             end
@@ -233,9 +232,6 @@ function CipeZenLoadPlayer(id)
     ExecuteCommand(('remove_principal identifier.license:%s group.%s'):format(player.License, "admin"))
     ExecuteCommand(('add_principal identifier.license:%s group.%s'):format(player.License, player.Permission))
     CipeZenPlayers[player.License] = player
-end
-
-function CipeZenGetPlayerInventory(id)
 end
 
 function CipeZenAddMoney(id,money,count)
@@ -326,7 +322,6 @@ function GetAllVehicleInRange(id,range)
     return findVehicles
 end
 
-
 function CZChangePermission(id,group)
     local license = CZGetIdentifiers(id).license
     local lastGroup = CipeZenPlayers[license].Permission
@@ -349,16 +344,35 @@ function CZGetItem(name)
 end
 
 function CZCreateUniqueItem(cb,name,label,description,other,owner)
-    MySQL.Async.execute('INSERT INTO uniqueitems (name,label,description,other,owner) VALUES(@name,@label,@description,@other,@owner)',{
-        ['@name'] = name,
-        ['@label'] = label,
-        ['@description'] = description or "",
-        ['@other'] = json.encode(other) or nil,
-        ['@owner'] = owner or nil,
-    }, function (result2)
-        local id = MySQL.Sync.fetchAll('SELECT id AS id FROM uniqueitems')
-        cb(id[#id].id)
-    end)
+    local playerId = CZGetPlayerIdFromLicense(owner)
+    if playerId then
+        MySQL.Async.execute('INSERT INTO uniqueitems (name,label,description,other,owner) VALUES(@name,@label,@description,@other,@owner)',{
+            ['@name'] = name,
+            ['@label'] = label,
+            ['@description'] = description or "",
+            ['@other'] = json.encode(other) or nil,
+            ['@owner'] = nil,
+        }, function (result2)
+            local id = MySQL.Sync.fetchAll('SELECT * FROM uniqueitems')
+            CipeZenUniqueItems[tostring(id[#id].id)] = id[#id]
+            CipeZenAddUniqueItem(playerId,id[#id].id)
+            cb(id[#id].id)
+        end)
+    else
+        CZ.Print("[CipeZen][ERROR] Player '"..owner.."' not online !")
+        cb(nil)
+    end
+end
+
+function CZGetPlayerIdFromLicense(license)
+    local players = GetPlayers()
+    for k,v in pairs(players) do
+        local l = CZGetIdentifiers(v).license
+        if l == license then
+            return v
+        end
+    end
+    return nil
 end
 
 function CZGetUniqueItem(id)
@@ -476,6 +490,7 @@ CZ.DuplicateTable = CZDuplicateTable
 CZ.GetPlayerFromId = CZGetPlayerFromId
 CZ.Try = CZTry
 CZ.CreateUniqueItem = CZCreateUniqueItem
+CZ.GetPlayerIdFromLicense = CZGetPlayerIdFromLicense
 
 CZRegisterCallback("cz:getPlayerData",function(source,cb)
     cb(CZGetPlayerFromId(source))
@@ -486,15 +501,15 @@ MySQL.ready(function ()
     local items2 = MySQL.Sync.fetchAll('SELECT * FROM uniqueitems')
     if items then
         for k,v in pairs(items) do
+            v.other = json.decode(v.other)
             CipeZenItems[v.name] = v
         end
     end
     if items2 then
         for k,v in pairs(items2) do
             v.limit = 1
-            v.uniqueitem = v.id
-            v.id = nil
-            CipeZenUniqueItems[tostring(v.uniqueitem)] = v
+            v.other = json.decode(v.other)
+            CipeZenUniqueItems[tostring(v.id)] = v
         end
     end
 end)
