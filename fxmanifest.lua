@@ -1,3 +1,6 @@
+game "gta5"
+fx_version "cerulean"
+
 client_scripts  {
     "client/controls.lua",
     "client/client.lua",
