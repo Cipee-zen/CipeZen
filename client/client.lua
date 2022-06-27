@@ -83,17 +83,17 @@ end)
 AddEventHandler("CZ:requestExistCallback", function(_idcallback,_callbackname,...)
     local idcallback = _idcallback
     local callbackname = _callbackname
-    local data = ...
+    local data = table.pack(...)
     function CB(...)
         TriggerServerEvent("CZ:returnRequstExistCallback",idcallback,true,...)
     end
     Citizen.CreateThread(function()
         while CipeZenEventsLoadCount ~= CipeZenEventsCount do
-            Citizen.Wait(10)
+            Citizen.Wait(300)
         end
-        Wait(300)
+        Wait(100)
         if CZClientCallBack[callbackname] then
-            CZClientCallBack[callbackname].CB(CB,data)
+            CZClientCallBack[callbackname].CB(CB,table.unpack(data))
         else
             TriggerServerEvent("CZ:returnRequstExistCallback",idcallback,false)
         end
