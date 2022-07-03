@@ -117,6 +117,10 @@ AddEventHandler("CipeZen:spawnVehicleOnPlayer", function (model)
         })
     end
 end)
+AddEventHandler("playerSpawned", function(spawn)
+	SetCanAttackFriendly(PlayerPedId(), true, false)
+	NetworkSetFriendlyFireOption(true)
+end)
 
 function CZPrint(a)
     local text = ""
