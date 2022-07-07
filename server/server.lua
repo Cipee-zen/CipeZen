@@ -345,25 +345,29 @@ end
 
 function CZCreateUniqueItem(cb,name,label,description,other,owner)
     local playerId = CZGetPlayerIdFromLicense(owner)
-    if playerId then
-        MySQL.Async.execute('INSERT INTO uniqueitems (name,label,description,other,owner) VALUES(@name,@label,@description,@other,@owner)',{
-            ['@name'] = name,
-            ['@label'] = label,
-            ['@description'] = description or "",
-            ['@other'] = json.encode(other) or nil,
-            ['@owner'] = nil,
-        }, function (result2)
-            local id = MySQL.Sync.fetchAll('SELECT * FROM uniqueitems')
-            id[#id].other = json.decode(id[#id].other)
-            id[#id].limit = 1
-            CipeZenUniqueItems[tostring(id[#id].id)] = id[#id]
-            CipeZenAddUniqueItem(playerId,id[#id].id)
-            cb(id[#id].id)
-        end)
-    else
-        CZ.Print("[CipeZen][ERROR] Player '"..owner.."' not online !")
-        cb(nil)
+    if owner then
+        if not playerId then
+            CZ.Print("[CipeZen][ERROR] Player '"..owner.."' not online !")
+            cb(nil)
+            return
+        end
     end
+    MySQL.Async.execute('INSERT INTO uniqueitems (name,label,description,other,owner) VALUES(@name,@label,@description,@other,@owner)',{
+        ['@name'] = name,
+        ['@label'] = label,
+        ['@description'] = description or "",
+        ['@other'] = json.encode(other) or nil,
+        ['@owner'] = nil,
+    }, function (result2)
+        local id = MySQL.Sync.fetchAll('SELECT * FROM uniqueitems')
+        id[#id].other = json.decode(id[#id].other)
+        id[#id].limit = 1
+        CipeZenUniqueItems[tostring(id[#id].id)] = id[#id]
+        if owner then
+            CipeZenAddUniqueItem(playerId,id[#id].id)
+        end
+        cb(id[#id])
+    end)
 end
 
 function CZGetPlayerIdFromLicense(license)
