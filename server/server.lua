@@ -355,6 +355,7 @@ function CZCreateUniqueItem(cb,name,label,description,other,owner)
         }, function (result2)
             local id = MySQL.Sync.fetchAll('SELECT * FROM uniqueitems')
             id[#id].other = json.decode(id[#id].other)
+            id[#id].limit = 1
             CipeZenUniqueItems[tostring(id[#id].id)] = id[#id]
             CipeZenAddUniqueItem(playerId,id[#id].id)
             cb(id[#id].id)
