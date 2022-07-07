@@ -336,10 +336,10 @@
 - ### CreateUniqueItem
   >this function allows you to create a unique id
 
-  ***remember not to use the same ids with other unique items***
+  ***remember that the function returns the unique item***
   Parameter | Type | Description
   ------------ | ------------- | -------------
-  callback | `function` | the callback that returns the unique id
+  callback | `function` | the callback that returns the unique item
   name | `string` | the uniqueid of the item
   label | `string` | the label of the item
   description | `string` | the description of the item
@@ -347,7 +347,7 @@
   owner | `string` | the license of the owner of the item
 
   ```lua
-  CZ.CreateUniqueItem(function(uniqueid)
+  CZ.CreateUniqueItem(function(uniqueItem)
     -- your code
   end,"name","label","description","other","owner")
   ```
