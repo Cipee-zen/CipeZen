@@ -58,7 +58,7 @@ local commands = {
         suggestion = {
             HelpText = "Spawn a car",
             Suggestions = {
-                { name="model", help="model of car adder..." },
+                { name="model", help="car model adder..." },
             }
         },
         func = function (source,args,rawcommand)
@@ -100,6 +100,33 @@ local commands = {
                     end
                 else
                     CZ.Print("This command can be execute only in game !")
+                end
+            end
+        end
+    },
+    {
+        name = "refreshitem",
+        permission = "admin",
+        suggestion = {
+            HelpText = "Refresh item in CipeZen",
+            Suggestions = {}
+        },
+        func = function (source,args,rawcommand)
+            local items = MySQL.Sync.fetchAll('SELECT * FROM items')
+            local items2 = MySQL.Sync.fetchAll('SELECT * FROM uniqueitems')
+            CipeZenItems = {}
+            CipeZenUniqueItems = {}
+            if items then
+                for k,v in pairs(items) do
+                    v.other = json.decode(v.other)
+                    CipeZenItems[v.name] = v
+                end
+            end
+            if items2 then
+                for k,v in pairs(items2) do
+                    v.limit = 1
+                    v.other = json.decode(v.other)
+                    CipeZenUniqueItems[tostring(v.id)] = v
                 end
             end
         end

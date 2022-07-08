@@ -45,6 +45,38 @@
   
     TriggerEvent("InitializeCipeZenFrameWork",function(cz) CZ = cz end)
     ```
+- ### Commands
+  - `setpermission`
+    >set the permission of a player [`admin`,`user`]
+
+    ***permission that can use the command `admin`***
+    Args | Name | Description
+    ------------ | ------------- | -------------
+    `{1}` | id | player id
+    `{2}` | group | the group to set
+  - `car`
+    >spaw a vehicle  [`adder`]
+
+    ***permission that can use the command `admin`***
+    Args | Name | Description
+    ------------ | ------------- | -------------
+    `{1}` | model | car model
+  - `dv`
+    >deletes nearby vehicles
+
+    ***permission that can use the command `admin`***
+    Args | Name | Description
+    ------------ | ------------- | -------------
+    `{1}` | range | range of deleting
+  - `giveitem`
+    >give item to player
+
+    ***permission that can use the command `admin`***
+    Args | Name | Description
+    ------------ | ------------- | -------------
+    `{1}` | to | Id of player or 'me' for yourself
+    `{2}` | item | item name
+    `{3}` | amount | amount of item
 - ### Variables
   Variable | Type | Description
   ------------ | ------------- | -------------
@@ -334,15 +366,15 @@
   local item = CZ.GetItem("name")
   ``` 
 - ### CreateUniqueItem
-  >this function allows you to create a unique id
+  >this function allows you to create a unique item
 
   ***remember that the function returns the unique item***
   Parameter | Type | Description
   ------------ | ------------- | -------------
   callback | `function` | the callback that returns the unique item
-  name | `string` | the uniqueid of the item
-  label | `string` | the label of the item
-  description | `string` | the description of the item
+  name | `string` | the name of the unique item
+  label | `string` | the label of the unique item
+  description | `string` | the description of unique the item
   other | `object` | an object that contains custom data
   owner | `string` | the license of the owner of the item
 
@@ -350,6 +382,32 @@
   CZ.CreateUniqueItem(function(uniqueItem)
     -- your code
   end,"name","label","description","other","owner")
+  ```
+- ### EditUniqueItem
+  >this function allows you to edit a unique item
+
+  ***remember that the 'other' parameter must be an object or nil***
+  Parameter | Type | Description
+  ------------ | ------------- | -------------
+  uniqueid | `string` | the uniqueid of the unique item
+  name | `string` | the name of the unique item
+  label | `string` | the label of the unique item
+  description | `string` | the description of the unique item
+  other | `object` | an object that contains custom data
+
+  ```lua
+  CZ.EditUniqueItem("uniqueid","name","label","description","other")
+  ```
+- ### DeleteUniqueItem
+  >this function allows you to delete a unique item
+
+  ***remember that it returns 'true' if the item has been removed***
+  Parameter | Type | Description
+  ------------ | ------------- | -------------
+  uniqueid | `string` | the uniqueid of the unique item
+
+  ```lua
+  local deleted = CZ.DeleteUniqueItem("uniqueid")
   ```
 - ### GetPlayerIdFromLicense
   >this function allows you to return the player id from the license

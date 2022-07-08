@@ -389,6 +389,46 @@ function CZGetUniqueItem(id)
     end
 end
 
+function CZEditUniqueItem(id,name,label,description,other)
+    local tid = tostring(id)
+    if CipeZenUniqueItems[tid] then
+        CipeZenUniqueItems[tid].name = name
+        CipeZenUniqueItems[tid].label = label
+        CipeZenUniqueItems[tid].description = description or ""
+        CipeZenUniqueItems[tid].other = other or {}
+        if other then
+            other = json.encode(other)
+        end
+        MySQL.Async.execute('UPDATE uniqueitems SET name = @name,label = @label,description = @description,other = @other WHERE id = @id', {
+            ["@name"] = name,
+            ["@label"] = label,
+            ["@description"] = description or "",
+            ["@other"] = other or "[]",
+            ["@id"] = tid
+        })  
+    else
+        return false
+    end
+end
+
+function CZDeleteUniqueItem(id)
+    local tid = tostring(id)
+    if CipeZenUniqueItems[tid] then
+        if CipeZenUniqueItems[tid].owner then
+            local playerId = CZGetPlayerIdFromLicense(CipeZenUniqueItems[tid].owner)
+            if playerId then
+                CipeZenRemoveUniqueItem(playerId,tid)
+            end
+        end
+        MySQL.Async.execute('DELETE FROM uniqueitems WHERE id = @id', {
+            ["@id"] = tid
+        })
+        CipeZenUniqueItems[tid] = nil
+    else
+        return false
+    end
+end
+
 function CipeZenRemoveUniqueItem(id,uniqueitem)
     local license = CZGetIdentifiers(id).license
     local player = CipeZenPlayers[license]
@@ -497,6 +537,8 @@ CZ.GetPlayerFromId = CZGetPlayerFromId
 CZ.Try = CZTry
 CZ.CreateUniqueItem = CZCreateUniqueItem
 CZ.GetPlayerIdFromLicense = CZGetPlayerIdFromLicense
+CZ.EditUniqueItem = CZEditUniqueItem
+CZ.DeleteUniqueItem = CZDeleteUniqueItem
 
 CZRegisterCallback("cz:getPlayerData",function(source,cb)
     cb(CZGetPlayerFromId(source))
