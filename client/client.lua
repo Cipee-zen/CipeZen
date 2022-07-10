@@ -281,7 +281,7 @@ function CZCreateThread(_time,cb)
 end
 
 function CZDrawMarker(options)
-    DrawMarker(v.Option.type or 2, v.Option.posX or 0.0, v.Option.posY or 0.0, v.Option.posZ or 0.0, v.Option.dirX or 0.0, v.Option.dirY or 0.0, v.Option.dirZ or 0.0, v.Option.rotX or 0.0, v.Option.rotY or 0.0, v.Option.rotZ or 0.0, v.Option.scaleX or 1.0, v.Option.scaleY or 1.0, v.Option.scaleZ or 1.0, v.Option.red or 200, v.Option.green or 200, v.Option.blue or 200, v.Option.alpha or 200, v.Option.bobUpAndDown or false, v.Option.faceCamera or false, v.Option.p19 or 2, v.Option.rotate or false, v.Option.textureDict or nil, v.Option.textureName or nil, v.Option.drawOnEnts or false)
+    DrawMarker(options.type or 2, options.posX or 0.0, options.posY or 0.0, options.posZ or 0.0, options.dirX or 0.0, options.dirY or 0.0, options.dirZ or 0.0, options.rotX or 0.0, options.rotY or 0.0, options.rotZ or 0.0, options.scaleX or 1.0, options.scaleY or 1.0, options.scaleZ or 1.0, options.red or 200, options.green or 200, options.blue or 200, options.alpha or 200, options.bobUpAndDown or false, options.faceCamera or false, options.p19 or 2, options.rotate or false, options.textureDict or nil, options.textureName or nil, options.drawOnEnts or false)
 end
 
 function CZTriggerCallback(name,cb,...)
