@@ -18,11 +18,14 @@ RegisterNetEvent("CZ:requestExistCallback")
 RegisterNetEvent("CZ:updateJob")
 RegisterNetEvent("CZ:updatePermission")
 RegisterNetEvent("CipeZen:spawnVehicleOnPlayer")
+RegisterNetEvent("CZ:onUpdate")
 AddEventHandler("CZ:updateJob", function(job)
-    Job = job
+    CZ.Job = job
+    UpdateCZ()
 end)
 AddEventHandler("CZ:updatePermission",function(permission)
     CZ.Permission = permission
+    UpdateCZ()
 end)
 AddEventHandler("InitializeCipeZenFrameWork",function(_cb,_cb2)
     local cb = _cb
@@ -31,9 +34,6 @@ AddEventHandler("InitializeCipeZenFrameWork",function(_cb,_cb2)
         while CipeZenEventsLoadCount ~= CipeZenEventsCount do
             Citizen.Wait(10)
         end
-        --local cz = CZDuplicateObject(CZ)
-        CZ.Job = Job
-        CZ.Permission = Permission
         cb(CZ)
     end)
     if cb2 then
@@ -115,6 +115,10 @@ AddEventHandler("playerSpawned", function(spawn)
 	SetCanAttackFriendly(PlayerPedId(), true, false)
 	NetworkSetFriendlyFireOption(true)
 end)
+
+function UpdateCZ()
+    TriggerEvent("CZ:onUpdate", CZ)
+end
 
 function CZPrint(a)
     local text = ""
@@ -220,7 +224,6 @@ CZ.Print = CZPrint
 CipeZenEventsLoadCount = CipeZenEventsLoadCount + 1
 
 function CZCreateThread(_time,cb)
-    CZ.Print(_time)
     Citizen.CreateThread(function()
         if tonumber(_time) then
             Wait(1000)
@@ -388,12 +391,12 @@ Citizen.CreateThread(function()
     CZ.PlayerId = PlayerId()
     CZ.PlayerServerId = GetPlayerServerId(CZ.PlayerId)
     CZ.PlayerName = GetPlayerName(CZ.PlayerId)
-    CZ.Job = Job
     CZTriggerCallback("cz:getPlayerData",function(data)
-        Permission = data.Permission
-        Job = data.Job
+        CZ.Permission = data.Permission
+        CZ.Job = data.Job
         CZ.Idenrifiers = data.Identifiers
         CipeZenEventsLoadCount = CipeZenEventsLoadCount + 1
+        UpdateCZ()
     end)
     Wait(5000)
     ClearPlayerWantedLevel(CZ.PlayerPedId)
@@ -411,6 +414,7 @@ Citizen.CreateThread(function()
 			end
         else
             CZ.PlayerPedId = PlayerPedId()
+            UpdateCZ()
         end
     end)
 end)

@@ -22,6 +22,10 @@
     TriggerEvent("InitializeCipeZenFrameWork",function(cz)
       CZ = cz
     end)
+    
+    AddEventHandler("CZ:onUpdate", function (cz)
+	    CZ = cz
+    end)
     ```
     >to use [register callback](#registercallback) or [trigger callback](#triggercallback) you can also initialize like this.
   
@@ -33,6 +37,10 @@
       CZ = cz
     end,function(czcallback)
       -- register or call callback
+    end)
+
+    AddEventHandler("CZ:onUpdate", function (cz)
+	    CZ = cz
     end)
     ```
   - Server
