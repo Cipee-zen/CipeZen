@@ -180,7 +180,6 @@
   Parameter | Type | Description
   ------------ | ------------- | -------------
   options | `object` | the marker options, **pos , color ecc...**
-  callback | `function` | **[OPTIONAL]** if set, a callback is created every 1 milliseconds
 
   - options
     Parameter | Type | Default |Description
@@ -212,9 +211,7 @@
   
   ```lua
   local pos = GetEntityCoords(PlayerPedId())
-  CZ.DrawMarker({type = 1,posX = pos.x,posY = pos.y,posZ = pos.z },function() 
-    -- your code to execute every 1 milliseconds. [OPTIONAL] remove the function if you don't use it
-  end)
+  CZ.DrawMarker({type = 1,posX = pos.x,posY = pos.y,posZ = pos.z })
   ```
 
 <!--

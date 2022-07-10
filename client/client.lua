@@ -11,7 +11,6 @@ Permission = "player"
 
 local allCZControlThreads = {}
 local allCZThreads = {}
-local allCZMarkers = {}
 
 RegisterNetEvent("InitializeCipeZenFrameWork")
 RegisterNetEvent("CZ:returnRequstExistCallback")
@@ -67,11 +66,6 @@ AddEventHandler("onResourceStop", function(resource)
     if #allCZControlThreads == 1 then
         if type(allCZControlThreads[1].CB) ~= "function" and string.find(allCZControlThreads[1].CB.__cfx_functionReference,resource) then
             allCZControlThreads = {}
-        end
-    end
-    for k,v in pairs(allCZMarkers) do
-        if type(v.CB) ~= "function" and string.find(v.CB.__cfx_functionReference,resource) then
-            table.remove(allCZMarkers,k)
         end
     end
     for k,v in pairs(CZClientCallBack) do
@@ -286,24 +280,8 @@ function CZCreateThread(_time,cb)
     end)
 end
 
-function CZDrawMarker(options,cb)
-    if not allCZMarkers or #allCZMarkers == 0 then
-        allCZMarkers = {{Option = options,CB = cb}}
-        CZCreateThread(1,function(pause,reasume,delete)
-            if not allCZMarkers or #allCZMarkers == 0 then
-                delete()
-                allCZMarkers = {}
-            end
-            for k,v in pairs(allCZMarkers) do
-                DrawMarker(v.Option.type or 2, v.Option.posX or 0.0, v.Option.posY or 0.0, v.Option.posZ or 0.0, v.Option.dirX or 0.0, v.Option.dirY or 0.0, v.Option.dirZ or 0.0, v.Option.rotX or 0.0, v.Option.rotY or 0.0, v.Option.rotZ or 0.0, v.Option.scaleX or 1.0, v.Option.scaleY or 1.0, v.Option.scaleZ or 1.0, v.Option.red or 200, v.Option.green or 200, v.Option.blue or 200, v.Option.alpha or 200, v.Option.bobUpAndDown or false, v.Option.faceCamera or false, v.Option.p19 or 2, v.Option.rotate or false, v.Option.textureDict or nil, v.Option.textureName or nil, v.Option.drawOnEnts or false)
-                if v.CB then
-                    v.CB()
-                end
-            end
-        end)
-    else
-        table.insert(allCZMarkers,{Option = options,CB = cb})
-    end
+function CZDrawMarker(options)
+    DrawMarker(v.Option.type or 2, v.Option.posX or 0.0, v.Option.posY or 0.0, v.Option.posZ or 0.0, v.Option.dirX or 0.0, v.Option.dirY or 0.0, v.Option.dirZ or 0.0, v.Option.rotX or 0.0, v.Option.rotY or 0.0, v.Option.rotZ or 0.0, v.Option.scaleX or 1.0, v.Option.scaleY or 1.0, v.Option.scaleZ or 1.0, v.Option.red or 200, v.Option.green or 200, v.Option.blue or 200, v.Option.alpha or 200, v.Option.bobUpAndDown or false, v.Option.faceCamera or false, v.Option.p19 or 2, v.Option.rotate or false, v.Option.textureDict or nil, v.Option.textureName or nil, v.Option.drawOnEnts or false)
 end
 
 function CZTriggerCallback(name,cb,...)
@@ -332,11 +310,24 @@ CZEvent.TriggerCallback = CZTriggerCallback
 CipeZenTriggerEventLoad = true
 
 function CZGetNearestPlayer()
-    local entity = GetNearestPlayerToEntity(CZ.PlayerPedId)
-    local distance = Vdist(GetEntityCoords(entity), GetEntityCoords(CZ.PlayerPedId))
-    if entity == CZ.PlayerId then
-        entity = -1
-        distance = -1
+    local players = GetActivePlayers()
+    local entity = -1
+    local distance = -1
+    local playerPos = GetEntityCoords(CZ.PlayerPedId)   
+    for k,v in pairs(players) do
+        if v ~= CZ.PlayerId then
+            local pos = GetEntityCoords(GetPlayerPed(v))
+            local dist = Vdist(pos, playerPos)
+            if distance == -1 then
+                distance = dist
+                entity = v
+            else
+                if dist < distance then
+                    distance = dist
+                    entity = v
+                end
+            end
+        end
     end
     return entity,distance
 end
