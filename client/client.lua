@@ -124,8 +124,10 @@ function CZPrint(a)
     local text = ""
     local cane = true
     if a then
-        if type(a) == "number" or  type(a) == "string" then
-            text = "["..a.."]"
+        if type(a) == "number" then
+            text = "["..tostring(a).."]"
+        elseif type(a) == "string" then
+            text = "['"..tostring(a).."']"
         elseif type(a) == "table" then
             text = text .. CipeZenReturnArrayText(0,a)
         else 
@@ -139,7 +141,11 @@ function CZPrint(a)
         elseif a == true then
             text = "[true]"
         else
-            text = "["..tostring(a).."]"
+            if type(a) == "number" then
+                text = "["..tostring(a).."]"
+            elseif type(a) == "string" then
+                text = "['"..tostring(a).."']"
+            end
         end
     end
     print("CipeZen Print: \n"..text)
@@ -163,10 +169,12 @@ function CipeZenReturnArrayText(spacen,a)
             end
         else
             extra = ",\n"
-            if count ~= 1 then
-                text = text ..space.. "["..k.."] = "..tostring(v)..extra
+            if type(v) == "number" then
+                text = text ..space.."["..k.."]┤ = " .. tostring(v)..extra
+            elseif type(v) == "string" then
+                text = text ..space.."["..k.."]┤ = " .. "'"..tostring(v).."'"..extra
             else
-                text = text ..space.. "["..k.."] = "..tostring(v)..extra
+                text = text ..space.."["..k.."]┤ = " .. tostring(v)..extra
             end
         end
     end

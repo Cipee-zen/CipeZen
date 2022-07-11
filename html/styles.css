@@ -66,9 +66,6 @@ body {
     text-overflow: ellipsis;
     overflow: hidden;
     border-bottom: 2px solid #5a6253;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .notify-description {

@@ -85,8 +85,10 @@ end
 function CZPrint(a)
     local text = ""
     if a then
-        if type(a) == "number" or  type(a) == "string" then
-            text = "["..a.."]"
+        if type(a) == "number" then
+            text = "["..tostring(a).."]"
+        elseif type(a) == "string" then
+            text = "['"..tostring(a).."']"
         elseif type(a) == "table" then
             text = text .. CipeZenReturnArrayText(0,a)
         else 
@@ -100,7 +102,11 @@ function CZPrint(a)
         elseif a == true then
             text = "[true]"
         else
-            text = "["..tostring(a).."]"
+            if type(a) == "number" then
+                text = "["..tostring(a).."]"
+            elseif type(a) == "string" then
+                text = "['"..tostring(a).."']"
+            end
         end
     end
     print("CipeZen Print: \n"..text)
@@ -118,16 +124,28 @@ function CipeZenReturnArrayText(spacen,a)
         local extra = "\n"
         if type(v) == "table" then
             if count ~= 1 then
-                text = text ..space.."├["..k.."]┐" .. extra..CipeZenReturnArrayText(spacen + 1,v)
+                text = text ..space.."├["..k.."]┐" ..extra..CipeZenReturnArrayText(spacen + 1,v)
             else
-                text = text ..space.."┌["..k.."]" .. extra..CipeZenReturnArrayText(spacen + 1,v)
+                text = text ..space.."┌["..k.."]" ..extra..CipeZenReturnArrayText(spacen + 1,v)
             end
         else
             extra = ",\n"
             if count ~= 1 then
-                text = text ..space.. "├["..k.."] = "..tostring(v)..extra
+                if type(v) == "number" then
+                    text = text ..space.."├["..k.."]┤ = " .. tostring(v)..extra
+                elseif type(v) == "string" then
+                    text = text ..space.."├["..k.."]┤ = " .. "'"..tostring(v).."'"..extra
+                else
+                    text = text ..space.."├["..k.."]┤ = " .. tostring(v)..extra
+                end
             else
-                text = text ..space.. "┌["..k.."] = "..tostring(v)..extra
+                if type(v) == "number" then
+                    text = text ..space.. "┌["..k.."] = "..tostring(v)..extra
+                elseif type(v) == "string" then
+                    text = text ..space.. "┌["..k.."] = '"..tostring(v)..extra
+                else
+                    text = text ..space.. "┌["..k.."] = "..tostring(v)..extra
+                end
             end
         end
     end
@@ -205,7 +223,7 @@ function CipeZenLoadPlayer(id)
             else
                 if CipeZenItems[v.name] then
                     local item = CZDuplicateTable(CipeZenItems[v.name])
-                    item.count = v.count
+                    item.count = tonumber(v.count)
                     item.other = item.other
                     player.Inventory[v.name] = item
                 end
@@ -294,7 +312,11 @@ function CZGetPlayerFromId(_id)
             return CipeZenRemoveItem(_id,name,count)
         end
         player.GetItem = function (name)
-            return player.Inventory[name] or nil
+            if player.Inventory[name] then
+                player.Inventory[name].count = tonumber(player.Inventory[name].count)
+                return player.Inventory[name]
+            end
+            return nil
         end 
         while not CipeZenPlayers[player.Identifiers.license] do
             Wait(10)
@@ -459,7 +481,7 @@ function CipeZenRemoveItem(id,name,_count)
     local player = CipeZenPlayers[license]
     if player.Inventory[name] then
         if tonumber(player.Inventory[name].count) >= count then
-            player.Inventory[name].count = player.Inventory[name].count - count
+            player.Inventory[name].count = tonumber(player.Inventory[name].count) - count
             if player.Inventory[name].count <= 0 then
                 player.Inventory[name] = nil
             end
@@ -506,9 +528,10 @@ end
 function CipeZenAddItem(id,name,count)
     local license = CZGetIdentifiers(id).license
     local item = CZGetItem(name)
+    count = tonumber(count)
     if item then
         if CipeZenPlayers[license].Inventory[name] then
-            CipeZenPlayers[license].Inventory[name].count = CipeZenPlayers[license].Inventory[name].count + count
+            CipeZenPlayers[license].Inventory[name].count = tonumber(CipeZenPlayers[license].Inventory[name].count) + count
         else
             item.count = count
             CipeZenPlayers[license].Inventory[name] = item
