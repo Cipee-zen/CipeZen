@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS `items` (
   `name` varchar(50) DEFAULT NULL,
   `label` varchar(50) DEFAULT NULL,
   `limit` int(11) DEFAULT -1,
+  `weight` int(11) DEFAULT 1,
   `canRemove` int(11) unsigned DEFAULT 1,
   `description` longtext DEFAULT '',
   `other` longtext DEFAULT '[]'
@@ -30,6 +31,7 @@ CREATE TABLE IF NOT EXISTS `uniqueitems` (
   `description` longtext DEFAULT '',
   `other` longtext DEFAULT '[]',
   `owner` longtext DEFAULT NULL,
+  `weight` int(11) DEFAULT 1,
   `canRemove` int(11) DEFAULT 1,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4;
