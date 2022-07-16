@@ -365,7 +365,7 @@ function CZGetItem(name)
     end
 end
 
-function CZCreateUniqueItem(cb,name,label,description,other,owner)
+function CZCreateUniqueItem(cb,name,label,description,weight,other,owner)
     local playerId = CZGetPlayerIdFromLicense(owner)
     if owner then
         if not playerId then
@@ -374,11 +374,12 @@ function CZCreateUniqueItem(cb,name,label,description,other,owner)
             return
         end
     end
-    MySQL.Async.execute('INSERT INTO uniqueitems (name,label,description,other,owner) VALUES(@name,@label,@description,@other,@owner)',{
+    MySQL.Async.execute('INSERT INTO uniqueitems (name,label,description,other,owner,weight) VALUES(@name,@label,@description,@other,@owner,@weight)',{
         ['@name'] = name,
         ['@label'] = label,
         ['@description'] = description or "",
         ['@other'] = json.encode(other) or nil,
+        ['@weight'] = weight,
         ['@owner'] = nil,
     }, function (result2)
         local id = MySQL.Sync.fetchAll('SELECT * FROM uniqueitems')

@@ -380,13 +380,14 @@
   name | `string` | the name of the unique item
   label | `string` | the label of the unique item
   description | `string` | the description of unique the item
+  weight | `int float` | the weight of unique the item
   other | `object` | an object that contains custom data
   owner | `string` | the license of the owner of the item
 
   ```lua
   CZ.CreateUniqueItem(function(uniqueItem)
     -- your code
-  end,"name","label","description","other","owner")
+  end,"name","label","description","weight","other","owner")
   ```
 - ### EditUniqueItem
   >this function allows you to edit a unique item
