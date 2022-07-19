@@ -17,7 +17,7 @@ RegisterServerEvent("CipeZen:updatePlayerCoords")
 RegisterServerEvent("CZ:addInventoryItem")
 AddEventHandler("InitializeCipeZenFrameWork", function(cb)
     if CZ then
-        local cz = CZDuplicateTable(CZ)
+        local cz = CZDuplicateObject(CZ)
         cb(CZ)
     end
 end)
@@ -74,7 +74,7 @@ AddEventHandler("playerDropped",function(reason)
     CZPlayersLoad[license] = nil
 end)
 
-function CZDuplicateTable(table)
+function CZDuplicateObject(table)
     local newTable = {}
     for k,v in pairs(table) do
         newTable[k] = v
@@ -215,14 +215,14 @@ function CipeZenLoadPlayer(id)
         for k,v in pairs(json.decode(playerData[1].inventory)) do
             if v.id then
                 if CipeZenUniqueItems[tostring(v.id)] then
-                    local item = CZDuplicateTable(CipeZenUniqueItems[tostring(v.id)])
+                    local item = CZDuplicateObject(CipeZenUniqueItems[tostring(v.id)])
                     item.count = 1
                     item.limit = 1
                     player.Inventory[tostring(v.id)] = item
                 end
             else
                 if CipeZenItems[v.name] then
-                    local item = CZDuplicateTable(CipeZenItems[v.name])
+                    local item = CZDuplicateObject(CipeZenItems[v.name])
                     item.count = tonumber(v.count)
                     item.other = item.other
                     player.Inventory[v.name] = item
@@ -359,7 +359,7 @@ end
 
 function CZGetItem(name)
     if CipeZenItems[name] then
-        return CZDuplicateTable(CipeZenItems[name])
+        return CZDuplicateObject(CipeZenItems[name])
     else
         return nil
     end
@@ -406,7 +406,7 @@ end
 
 function CZGetUniqueItem(id)
     if CipeZenUniqueItems[tostring(id)] then
-        return CZDuplicateTable(CipeZenUniqueItems[tostring(id)])
+        return CZDuplicateObject(CipeZenUniqueItems[tostring(id)])
     else
         return nil
     end
@@ -479,28 +479,30 @@ function CipeZenRemoveUniqueItem(id,uniqueitem)
 end
 
 function CipeZenRemoveItem(id,name,_count)
-    local count = tonumber(_count)
-    local license = CZGetIdentifiers(id).license
-    local player = CipeZenPlayers[license]
-    if player.Inventory[name] then
-        if tonumber(player.Inventory[name].count) >= count then
-            player.Inventory[name].count = tonumber(player.Inventory[name].count) - count
-            if player.Inventory[name].count <= 0 then
-                player.Inventory[name] = nil
+    if name then
+        local count = tonumber(_count)
+        local license = CZGetIdentifiers(id).license
+        local player = CipeZenPlayers[license]
+        if player.Inventory[name] then
+            if tonumber(player.Inventory[name].count) >= count then
+                player.Inventory[name].count = tonumber(player.Inventory[name].count) - count
+                if player.Inventory[name].count <= 0 then
+                    player.Inventory[name] = nil
+                end
+                MySQL.Async.execute('UPDATE players SET inventory = @inventory WHERE rockstarlicense = @rockstarlicense', {
+                    ["@rockstarlicense"] = license,
+                    ["@inventory"] = json.encode(player.Inventory)
+                })
+                TriggerEvent("CZ:removeInventoryItem",id,name,count)
+                return true
+            else
+                CZ.Print("[CipeZen][ERROR]don't have enought "..name.." !")
+                return false
             end
-            MySQL.Async.execute('UPDATE players SET inventory = @inventory WHERE rockstarlicense = @rockstarlicense', {
-                ["@rockstarlicense"] = license,
-                ["@inventory"] = json.encode(player.Inventory)
-            })
-            TriggerEvent("CZ:removeInventoryItem",id,name,count)
-            return true
         else
-            CZ.Print("[CipeZen][ERROR]don't have enought "..name.." !")
+            CZ.Print("[CipeZen][ERROR] don't have \'"..name.."\' !")
             return false
         end
-    else
-        CZ.Print("[CipeZen][ERROR] don't have \'"..name.."\' !")
-        return false
     end
 end
 
@@ -558,7 +560,7 @@ CZ.TriggerCallback = CZTriggerCallback
 CZ.GetIdentifiers = CZGetIdentifiers
 CZ.GetItem = CZGetItem
 CZ.Print = CZPrint
-CZ.DuplicateTable = CZDuplicateTable
+CZ.DuplicateObject = CZDuplicateObject
 CZ.GetPlayerFromId = CZGetPlayerFromId
 CZ.Try = CZTry
 CZ.CreateUniqueItem = CZCreateUniqueItem
