@@ -398,6 +398,7 @@
   uniqueid | `string` | the uniqueid of the unique item
   name | `string` | the name of the unique item
   label | `string` | the label of the unique item
+  weight | `int float` | the weight of the unique item
   description | `string` | the description of the unique item
   other | `object` | an object that contains custom data
 

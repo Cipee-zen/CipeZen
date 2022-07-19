@@ -412,19 +412,21 @@ function CZGetUniqueItem(id)
     end
 end
 
-function CZEditUniqueItem(id,name,label,description,other)
+function CZEditUniqueItem(id,name,label,weight,description,other)
     local tid = tostring(id)
     if CipeZenUniqueItems[tid] then
         CipeZenUniqueItems[tid].name = name
         CipeZenUniqueItems[tid].label = label
         CipeZenUniqueItems[tid].description = description or ""
+        CipeZenUniqueItems[tid].weight = weight
         CipeZenUniqueItems[tid].other = other or {}
         if other then
             other = json.encode(other)
         end
-        MySQL.Async.execute('UPDATE uniqueitems SET name = @name,label = @label,description = @description,other = @other WHERE id = @id', {
+        MySQL.Async.execute('UPDATE uniqueitems SET name = @name,label = @label,weight = @weight,description = @description,other = @other WHERE id = @id', {
             ["@name"] = name,
             ["@label"] = label,
+            ["@weight"] = weight,
             ["@description"] = description or "",
             ["@other"] = other or "[]",
             ["@id"] = tid

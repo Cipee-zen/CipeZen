@@ -1,4 +1,4 @@
-CREATE DATABASE IF NOT EXISTS `cipezen`
+CREATE DATABASE IF NOT EXISTS `cipezen`;
 USE `cipezen`;
 
 CREATE TABLE IF NOT EXISTS `items` (
@@ -20,8 +20,8 @@ CREATE TABLE IF NOT EXISTS `players` (
   `weapons` longtext DEFAULT NULL,
   `job` text DEFAULT 'unemployed',
   `jobgrade` int(11) DEFAULT 0,
-  `backpack` text DEFAULT NULL,
-  `skin` longtext DEFAULT NULL
+  `backpack` text DEFAULT 'default',
+  `armor` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `uniqueitems` (
