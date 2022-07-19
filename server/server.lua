@@ -74,12 +74,25 @@ AddEventHandler("playerDropped",function(reason)
     CZPlayersLoad[license] = nil
 end)
 
-function CZDuplicateObject(table)
-    local newTable = {}
-    for k,v in pairs(table) do
-        newTable[k] = v
+function CZDuplicateObject(orig,copies)
+    copies = copies or {}
+    local orig_type = type(orig)
+    local copy
+    if orig_type == 'table' then
+        if copies[orig] then
+            copy = copies[orig]
+        else
+            copy = {}
+            copies[orig] = copy
+            for orig_key, orig_value in next, orig, nil do
+                copy[CZDuplicateObject(orig_key, copies)] = CZDuplicateObject(orig_value, copies)
+            end
+            setmetatable(copy, CZDuplicateObject(getmetatable(orig), copies))
+        end
+    else
+        copy = orig
     end
-    return newTable
+    return copy
 end
 
 function CZPrint(a)

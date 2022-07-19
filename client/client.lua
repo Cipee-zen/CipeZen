@@ -212,12 +212,25 @@ function CZHelpNotify(_title,_description,_time)
     end)
 end
 
-function CZDuplicateObject(object)
-    local newObject = {}
-    for k,v in pairs(object) do
-        newObject[k] = v
+function CZDuplicateObject(orig,copies)
+    copies = copies or {}
+    local orig_type = type(orig)
+    local copy
+    if orig_type == 'table' then
+        if copies[orig] then
+            copy = copies[orig]
+        else
+            copy = {}
+            copies[orig] = copy
+            for orig_key, orig_value in next, orig, nil do
+                copy[CZDuplicateObject(orig_key, copies)] = CZDuplicateObject(orig_value, copies)
+            end
+            setmetatable(copy, CZDuplicateObject(getmetatable(orig), copies))
+        end
+    else
+        copy = orig
     end
-    return newObject
+    return copy
 end
 
 CZ.DuplicateObject = CZDuplicateObject
