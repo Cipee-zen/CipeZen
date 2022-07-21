@@ -257,9 +257,9 @@ function CipeZenLoadPlayer(id)
     local ped = GetPlayerPed(id)
     SetEntityCoords(ped,player.LastPosition.x,player.LastPosition.y,player.LastPosition.z)
     SetEntityHeading(ped, player.LastPosition.h)
-    ExecuteCommand(('remove_principal identifier.license:%s group.%s'):format(player.License, "player"))
-    ExecuteCommand(('remove_principal identifier.license:%s group.%s'):format(player.License, "admin"))
-    ExecuteCommand(('add_principal identifier.license:%s group.%s'):format(player.License, player.Permission))
+    ExecuteCommand(('remove_principal identifier.%s:%s group.%s'):format(Config.identifer,player.License, "player"))
+    ExecuteCommand(('remove_principal identifier.%s:%s group.%s'):format(Config.identifer,player.License, "admin"))
+    ExecuteCommand(('add_principal identifier.%s:%s group.%s'):format(Config.identifer,player.License, player.Permission))
     CipeZenPlayers[player.License] = player
 end
 
@@ -358,9 +358,9 @@ end
 function CZChangePermission(id,group)
     local license = CZGetIdentifiers(id)[Config.identifer]
     local lastGroup = CipeZenPlayers[license].Permission
-    ExecuteCommand(('remove_principal identifier.license:%s group.%s'):format(license, lastGroup))
+    ExecuteCommand(('remove_principal identifier.%s:%s group.%s'):format(Config.identifer,license, lastGroup))
     CipeZenPlayers[license].Permission = group
-    ExecuteCommand(('add_principal identifier.license:%s group.%s'):format(license, group))
+    ExecuteCommand(('add_principal identifier.%s:%s group.%s'):format(Config.identifer,license, group))
     MySQL.Async.execute('UPDATE players SET permission = @permission WHERE rockstarlicense = @rockstarlicense', {
         ["@rockstarlicense"] = license,
         ["@permission"] = group
