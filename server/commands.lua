@@ -27,7 +27,7 @@ local commands = {
                     args[1] = source
                 end
                 local licenses = CZ.GetIdentifiers(args[1])
-                if licenses and licenses.license then
+                if licenses and licenses[Config.identifer] then
                     CZ.ChangePermission(args[1],args[2])
                     if source ~= 0 then
                         TriggerClientEvent('chat:addMessage', source,{
