@@ -4,12 +4,20 @@
     ⚒️CipeZen is in beta let me know for bugs or improvements.⚒️
 
 ## Requirements
-  - [c_menu_z](https://github.com/Cipee-zen/c_menu_z) - v1
+  - [cz_menu](https://github.com/Cipee-zen/cz_menu) - v1
   - [mysql-async](https://github.com/brouznouf/fivem-mysql-async) - v3.3.2
 ## SecureResource
     SecureResource is used to secure the client side of resources from damping, to start securing a script click 'start.bat' in the 'SecureConfig' folder
 
     ⚒️SecureResource is in beta let me know for bugs or improvements.⚒️
+## Important
+  >add this in server.cfg
+
+  ```add_ace resource.CipeZen command.add_ace allow
+  add_ace resource.CipeZen command.add_principal allow
+  add_ace resource.CipeZen command.remove_principal allow
+  add_ace resource.CipeZen command.stop allow
+  ```
 ## Usage
 - ### Initialize
   - Client
