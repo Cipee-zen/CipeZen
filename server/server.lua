@@ -46,7 +46,7 @@ AddEventHandler("CZ:requestExistCallback", function(_idcallback,callbackname,...
     end
 end)
 AddEventHandler("CipeZen:playerLoad",function()
-    local license = CZGetIdentifiers(source).license
+    local license = CZGetIdentifiers(source)[Config.identifer]
     if not CZPlayersLoad[license] then
         CZPlayersLoad[license] = true
         local source = source
@@ -62,7 +62,7 @@ AddEventHandler("CipeZen:playerLoad",function()
 end)
 AddEventHandler("CipeZen:updatePlayerCoords",function(coords)
     MySQL.Async.execute('UPDATE players SET position = @position WHERE rockstarlicense = @rockstarlicense', {
-        ["@rockstarlicense"] = CZGetIdentifiers(source).license,
+        ["@rockstarlicense"] = CZGetIdentifiers(source)[Config.identifer],
         ["@position"] = json.encode(coords),
     })
 end)
@@ -70,7 +70,7 @@ AddEventHandler("CZ:addInventoryItem",function (id,name,count)
 end)
 AddEventHandler("playerDropped",function(reason)
     local source = source
-    local license = CZGetIdentifiers(source).license
+    local license = CZGetIdentifiers(source)[Config.identifer]
     CZPlayersLoad[license] = nil
 end)
 
@@ -213,7 +213,7 @@ end
 
 function CipeZenLoadPlayer(id)
     local player = {}
-    player.License = CZGetIdentifiers(id).license
+    player.License = CZGetIdentifiers(id)[Config.identifer]
     local playerData = MySQL.Sync.fetchAll('SELECT * FROM players WHERE rockstarlicense = @license',{["@license"] = player.License})
     player.Job = {JobName = "unemployed",JobLabel = "Unemployed",Grade = 0,GradeLabel = "Unemployed",GradeName = "unemployed"}
     player.Inventory = {}
@@ -266,7 +266,7 @@ function CipeZenLoadPlayer(id)
 end
 
 function CipeZenAddMoney(id,money,count)
-    local license = CZGetIdentifiers(id).license
+    local license = CZGetIdentifiers(id)[Config.identifer]
     if not CipeZenPlayers[license].Money then
         CipeZenPlayers[license].Money = {money = 0,bankmoney = 0,dirtymoney = 0}
     end
@@ -279,7 +279,7 @@ function CipeZenAddMoney(id,money,count)
 end
 
 function CipeZenRemoveMoney(id,money,count)
-    local license = CZGetIdentifiers(id).license
+    local license = CZGetIdentifiers(id)[Config.identifer]
     if not CipeZenPlayers[license].Money then
         CipeZenPlayers[license].Money = {money = 0,bankmoney = 0,dirtymoney = 0}
     end
@@ -331,14 +331,14 @@ function CZGetPlayerFromId(_id)
             end
             return nil
         end 
-        while not CipeZenPlayers[player.Identifiers.license] do
+        while not CipeZenPlayers[player.Identifiers[Config.identifer]] do
             Wait(10)
         end
-        if CipeZenPlayers[player.Identifiers.license] then
-            player.Money = CipeZenPlayers[player.Identifiers.license].Money
-            player.Job = CipeZenPlayers[player.Identifiers.license].Job
-            player.Inventory = CipeZenPlayers[player.Identifiers.license].Inventory
-            player.Permission = CipeZenPlayers[player.Identifiers.license].Permission
+        if CipeZenPlayers[player.Identifiers[Config.identifer]] then
+            player.Money = CipeZenPlayers[player.Identifiers[Config.identifer]].Money
+            player.Job = CipeZenPlayers[player.Identifiers[Config.identifer]].Job
+            player.Inventory = CipeZenPlayers[player.Identifiers[Config.identifer]].Inventory
+            player.Permission = CipeZenPlayers[player.Identifiers[Config.identifer]].Permission
         end
         return player
     end
@@ -358,7 +358,7 @@ function GetAllVehicleInRange(id,range)
 end
 
 function CZChangePermission(id,group)
-    local license = CZGetIdentifiers(id).license
+    local license = CZGetIdentifiers(id)[Config.identifer]
     local lastGroup = CipeZenPlayers[license].Permission
     ExecuteCommand(('remove_principal identifier.license:%s group.%s'):format(license, lastGroup))
     CipeZenPlayers[license].Permission = group
@@ -379,7 +379,7 @@ function CZGetItem(name)
 end
 
 function CZCreateUniqueItem(cb,name,label,description,weight,other,owner)
-    local playerId = CZGetPlayerIdFromLicense(owner)
+    local playerId = CZGetPlayerIdFromIdentifier(owner)
     if owner then
         if not playerId then
             CZ.Print("[CipeZen][ERROR] Player '"..owner.."' not online !")
@@ -406,10 +406,10 @@ function CZCreateUniqueItem(cb,name,label,description,weight,other,owner)
     end)
 end
 
-function CZGetPlayerIdFromLicense(license)
+function CZGetPlayerIdFromIdentifier(license)
     local players = GetPlayers()
     for k,v in pairs(players) do
-        local l = CZGetIdentifiers(v).license
+        local l = CZGetIdentifiers(v)[Config.identifer]
         if l == license then
             return v
         end
@@ -453,7 +453,7 @@ function CZDeleteUniqueItem(id)
     local tid = tostring(id)
     if CipeZenUniqueItems[tid] then
         if CipeZenUniqueItems[tid].owner then
-            local playerId = CZGetPlayerIdFromLicense(CipeZenUniqueItems[tid].owner)
+            local playerId = CZGetPlayerIdFromIdentifier(CipeZenUniqueItems[tid].owner)
             if playerId then
                 CipeZenRemoveUniqueItem(playerId,tid)
             end
@@ -468,7 +468,7 @@ function CZDeleteUniqueItem(id)
 end
 
 function CipeZenRemoveUniqueItem(id,uniqueitem)
-    local license = CZGetIdentifiers(id).license
+    local license = CZGetIdentifiers(id)[Config.identifer]
     local player = CipeZenPlayers[license]
     if uniqueitem and tostring(uniqueitem) then
         if player.Inventory[tostring(uniqueitem)] then
@@ -494,7 +494,7 @@ end
 function CipeZenRemoveItem(id,name,_count)
     if name then
         local count = tonumber(_count)
-        local license = CZGetIdentifiers(id).license
+        local license = CZGetIdentifiers(id)[Config.identifer]
         local player = CipeZenPlayers[license]
         if player.Inventory[name] then
             if tonumber(player.Inventory[name].count) >= count then
@@ -520,7 +520,7 @@ function CipeZenRemoveItem(id,name,_count)
 end
 
 function CipeZenAddUniqueItem(id,uniqueitem)
-    local license = CZGetIdentifiers(id).license
+    local license = CZGetIdentifiers(id)[Config.identifer]
     local player = CipeZenPlayers[license]
     local tid = tostring(uniqueitem)
     if CipeZenUniqueItems[tid] and not CipeZenUniqueItems[tid].owner then
@@ -544,7 +544,7 @@ function CipeZenAddUniqueItem(id,uniqueitem)
 end
 
 function CipeZenAddItem(id,name,count)
-    local license = CZGetIdentifiers(id).license
+    local license = CZGetIdentifiers(id)[Config.identifer]
     local item = CZGetItem(name)
     count = tonumber(count)
     if item then
@@ -577,7 +577,7 @@ CZ.DuplicateObject = CZDuplicateObject
 CZ.GetPlayerFromId = CZGetPlayerFromId
 CZ.Try = CZTry
 CZ.CreateUniqueItem = CZCreateUniqueItem
-CZ.GetPlayerIdFromLicense = CZGetPlayerIdFromLicense
+CZ.GetPlayerIdFromIdentifier = CZGetPlayerIdFromIdentifier
 CZ.EditUniqueItem = CZEditUniqueItem
 CZ.DeleteUniqueItem = CZDeleteUniqueItem
 

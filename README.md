@@ -416,7 +416,7 @@
   ```lua
   local deleted = CZ.DeleteUniqueItem("uniqueid")
   ```
-- ### GetPlayerIdFromLicense
+- ### GetPlayerIdFromIdentifier
   >this function allows you to return the player id from the license
 
   ***remember if the player is not online it will return nil***
@@ -425,7 +425,7 @@
   license | `string` | the rockstar license
 
   ```lua
-  local playerid = CZ.GetPlayerIdFromLicense("license")
+  local playerid = CZ.GetPlayerIdFromIdentifier("identifier")
   ```
 
 - ### Use CZPlayer
