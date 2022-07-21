@@ -23,6 +23,7 @@ function RequestPathResource() {
                     correctName.replace(/\s/g, '');
                     if (correctName.toLowerCase() == "s") {
                         let allFiles = FindResouceLua(_path);
+                        
                         if (allFiles) {
                             if (!allFiles.client_scripts) {
                                 console.log("\x1b[31mNo client script\x1b[0m");
@@ -159,14 +160,20 @@ function FindResouceLua(_path) {
         }
     })
 
-    client_scripts.forEach((script) => {
+    let clientDup = JSON.parse(JSON.stringify(client_scripts));
+
+    client_scripts = [];
+
+    for (let i = 0; i < clientDup.length; i++) {
+        let script = clientDup[i];
         let index = server_scripts.indexOf(script)
         if (index != -1) {
             equal_scripts.push(script);
-            client_scripts.splice(client_scripts.indexOf(script), 1);
             server_scripts.splice(index, 1);
+        }else {
+            client_scripts.push(script);
         }
-    })
+    }
     return { client_scripts, server_scripts, equal_scripts };
 }
 

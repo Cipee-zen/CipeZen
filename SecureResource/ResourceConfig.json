@@ -1,1 +1,1 @@
-{ "cz_global": { "client": ["cz_global/CayoPerico.lua", "cz_global/client.lua"] } }
+{"cz_global":{"client":["cz_global/CayoPerico.lua","cz_global/client.lua"]},"cp_skin":{"client":["cp_skin/client/main.lua"]}}
