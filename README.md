@@ -4,7 +4,7 @@
     ⚒️CipeZen is in beta let me know for bugs or improvements.⚒️
 
 ## Requirements
-  - [cz_menu](https://github.com/Cipee-zen/cz_menu) - v1
+  - [cz_menu](https://github.com/Cipee-zen/cz_menu) - v2.0.0 [info](#menu)
   - [mysql-async](https://github.com/brouznouf/fivem-mysql-async) - v3.3.2
 ## SecureResource
     SecureResource is used to secure the client side of resources from damping, to start securing a script click 'start.bat' in the 'SecureConfig' folder
@@ -123,22 +123,6 @@
 
 ## Client
 
-- ### CreateThread
-
-  >this function is the strong point of CipeZen, it allows you to create loops that are called at the desired time.
-
-  ***remember, this function groups all loops with the specified tempo into a single loop in order to optimize performance.***
-  
-  Parameter | Type | Description
-  ------------ | ------------- | -------------
-  time | `int` | the delay time in milliseconds
-  callback | `function(pause,reasume,delete)` | callback
-  
-  ```lua
-  CZ.CreateThread(10,function(pause,reasume,delete)
-    -- your code 
-  end)
-  ```
 - ### RegisterCallback
   
   >this function registers a callback on the client for the server.
@@ -287,6 +271,76 @@
 
   ```lua
   CZ.HelpNotify("title","description",5000)
+  ```
+- ### GetNearestPlayer
+  >return the player closest to you
+
+  ***remember that it returns both the coordinates and the player id***
+
+   ```lua
+  local player,distance = CZ.GetNearestPlayer()
+  ```
+- ### Menu
+
+  >this function allows you to open the menu
+
+  ***this function allows you to open the menu via [cz_menu](https://github.com/Cipee-zen/cz_menu)***
+  Parameter | Type | Description
+  ------------ | ------------- | -------------
+  type | `string` | the type of the menu **menu/text**
+  elements/title | `object/string` | the elements of the menu or the title of the text
+  cb | `function` | the interaction callback
+  cb | `function` | the close interaction callback
+
+  ```lua
+  -- icons https://fontawesome.com/icons
+  local elements = {
+		nil,-- 1
+		nil,-- 2
+		{icon="fas fa-thumbs-up",value="yes",description = "some description"},-- 3
+		nil,-- 4
+		nil,-- 5
+		nil,-- 6
+		{icon="fas fa-thumbs-down",value="no",description = "some description"},-- 7
+      nil,-- 8
+	}
+  CZ.Menu("menu",elements,function (menu,value)
+		if value == "yes" then
+			print("you clicked yes")
+		end
+  end,function (menu)
+		menu.close()
+  end)
+
+  -- text type menu
+  CZ.Menu("text","title",function (menu,value)
+		print(value)
+  end,function (menu)
+		menu.close()
+  end)
+
+  ```
+- ### CloseAllMenu
+  >this function allows you to close all menus
+  
+  ```lua
+  CZ.CloseAllMenu()
+  ```
+- ### CloseMenu
+  >this function allows you to close the menu
+  
+   Parameter | Type | Description
+  ------------ | ------------- | -------------
+  menu | `id` | the menu id to close returned on open
+  
+  ```lua
+  CZ.Menu("menu",elements,function (menu,value)
+    CZ.CloseMenu(menu.id)
+    -- or
+    menu.close()
+  end,function (menu)
+    	menu.close()
+  end)
   ```
 - ### GetNearestPlayer
   >return the player closest to you

@@ -10,7 +10,6 @@ Job = {}
 Permission = "player"
 
 local allCZControlThreads = {}
-local allCZThreads = {}
 
 RegisterNetEvent("InitializeCipeZenFrameWork")
 RegisterNetEvent("CZ:returnRequstExistCallback")
@@ -46,18 +45,6 @@ AddEventHandler("InitializeCipeZenFrameWork",function(_cb,_cb2)
     end
 end)
 AddEventHandler("onResourceStop", function(resource)
-    for k,v in pairs(allCZThreads) do
-        for s,t in pairs(v) do
-            if type(t.CB) ~= "function" and string.find(t.CB.__cfx_functionReference,resource) then
-                table.remove(v,s)
-            end
-        end
-        if #v == 1 then
-            if type(v[1].CB) ~= "function" and string.find(v[1].CB.__cfx_functionReference,resource) then
-                v = {}
-            end
-        end
-    end
     for k,v in pairs(allCZControlThreads) do
         if type(v.CB) ~= "function" and string.find(v.CB.__cfx_functionReference,resource) then
             table.remove(allCZControlThreads,k)
@@ -244,66 +231,6 @@ CipeZenEventsLoadCount = CipeZenEventsLoadCount + 1
 CZ.Print = CZPrint
 CipeZenEventsLoadCount = CipeZenEventsLoadCount + 1
 
-function CZCreateThread(_time,cb)
-    Citizen.CreateThread(function()
-        if tonumber(_time) then
-            Wait(1000)
-            local randomId = math.random(0,100) .. math.random(0,100)..math.random(0,100)..math.random(0,100)..math.random(0,100)..math.random(0,100)..math.random(0,100)
-            local time = _time
-            function Delete()
-                if allCZThreads[tostring(time) .. "t"] then
-                    for k,v in pairs(allCZThreads[tostring(time) .. "t"]) do
-                        if v.Id == randomId then
-                            table.remove(allCZThreads[tostring(time) .. "t"],k)
-                        end
-                    end
-                end
-            end
-            function Pause()
-                if allCZThreads[tostring(time) .. "t"] then
-                    for k,v in pairs(allCZThreads[tostring(time) .. "t"]) do
-                        if v.Id == randomId then
-                            v.Pause = true
-                        end
-                    end
-                end
-            end
-            function Reasume()
-                if allCZThreads[tostring(time) .. "t"] then
-                    for k,v in pairs(allCZThreads[tostring(time) .. "t"]) do
-                        if v.Id == randomId then
-                            v.Pause = false
-                        end
-                    end
-                end
-            end
-            if allCZThreads[tostring(time) .. "t"] then
-                table.insert(allCZThreads[tostring(time) .. "t"],{CB = cb,Id = randomId})
-            else
-                allCZThreads[tostring(time) .. "t"] = {{CB = cb,Id = randomId}}
-                Citizen.CreateThread(function()
-                    while true do
-                        if allCZThreads[tostring(time) .. "t"] and #allCZThreads[tostring(time) .. "t"] == 0 then
-                            allCZThreads[time .. "t"] = nil
-                            break;
-                        end
-                        Citizen.Wait(time)
-                        for k,v in pairs(allCZThreads[tostring(time) .. "t"]) do
-                            if not v.Pause then
-                                CZ.Try(function ()
-                                    v.CB(Pause,Reasume,Delete)
-                                end,function(error)
-                                    table.remove(allCZThreads[tostring(time) .. "t"],k)
-                                end)
-                            end
-                        end
-                    end
-                end)
-            end
-        end
-    end)
-end
-
 function CZDrawMarker(options)
     DrawMarker(options.type or 2, options.posX or 0.0, options.posY or 0.0, options.posZ or 0.0, options.dirX or 0.0, options.dirY or 0.0, options.dirZ or 0.0, options.rotX or 0.0, options.rotY or 0.0, options.rotZ or 0.0, options.scaleX or 1.0, options.scaleY or 1.0, options.scaleZ or 1.0, options.red or 200, options.green or 200, options.blue or 200, options.alpha or 200, options.bobUpAndDown or false, options.faceCamera or false, options.p19 or 2, options.rotate or false, options.textureDict or nil, options.textureName or nil, options.drawOnEnts or false)
 end
@@ -371,9 +298,10 @@ function CZControlPressed(_key,cb)
         end
         if #allCZControlThreads == 0 then
             table.insert(allCZControlThreads,{CB = cb,Key = key})
-            CZCreateThread(1,function(pause,reasume,delete)
+            while true do
+                Wait(1)
                 if #allCZControlThreads == 0 then
-                    delete()
+                    return
                 end
                 for k,v in pairs(allCZControlThreads) do
                     if not v.Used then
@@ -387,19 +315,22 @@ function CZControlPressed(_key,cb)
                         end
                     end
                 end
-            end)
-        end 
+            end
+        end
     end)
 end
 
-function CZMenu(name,data,cb,cb1,cb2)
-    TriggerEvent("c_menu_z:openMenu",name,data,cb,cb1,cb2)
+function CZMenu(t,data,cb,cb2)
+    TriggerEvent("cz_menu:openMenu",data,t,cb,cb2)
 end
 
 function CZCloseAllMenu()
-    TriggerEvent("c_menu_z:closeAllMenu")
+    TriggerEvent("cz_menu:closeAllMenu")
 end
 
+function CZCloseMenu(menu)
+    TriggerEvent("cz_menu:closeMenu",menu)
+end
 
 Citizen.CreateThread(function()
     while GetEntityCoords(PlayerPedId()) == vector3(0,0,0) or GetEntityCoords(PlayerPedId()) == vector3(0,0,1)  do
@@ -422,7 +353,8 @@ Citizen.CreateThread(function()
     Wait(5000)
     ClearPlayerWantedLevel(CZ.PlayerPedId)
 	SetMaxWantedLevel(0)
-    CZCreateThread(1000,function (pause,reasume,delete)
+    while true do
+        Citizen.Wait(1000)
         local playerPed = CZ.PlayerPedId
 		if DoesEntityExist(playerPed) then
 			local coords = GetEntityCoords(playerPed)
@@ -437,7 +369,7 @@ Citizen.CreateThread(function()
             CZ.PlayerPedId = PlayerPedId()
             UpdateCZ()
         end
-    end)
+    end
 end)
 
 Citizen.CreateThread(function()
@@ -452,11 +384,11 @@ CZ.Menu = CZMenu
 CipeZenEventsLoadCount = CipeZenEventsLoadCount + 1
 CZ.CloseAllMenu = CZCloseAllMenu
 CipeZenEventsLoadCount = CipeZenEventsLoadCount + 1
+CZ.CloseMenu = CZCloseMenu
+CipeZenEventsLoadCount = CipeZenEventsLoadCount + 1
 CZ.TriggerCallback = CZTriggerCallback
 CipeZenEventsLoadCount = CipeZenEventsLoadCount + 1
 CZ.RegisterCallback = CZRegisterCallback
-CipeZenEventsLoadCount = CipeZenEventsLoadCount + 1
-CZ.CreateThread = CZCreateThread
 CipeZenEventsLoadCount = CipeZenEventsLoadCount + 1
 CZ.DrawMarker = CZDrawMarker
 CipeZenEventsLoadCount = CipeZenEventsLoadCount + 1
