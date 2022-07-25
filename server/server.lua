@@ -72,6 +72,23 @@ AddEventHandler("playerDropped",function(reason)
     local license = CZGetIdentifiers(source)[Config.identifer]
     CZPlayersLoad[license] = nil
 end)
+AddEventHandler("playerConnecting", function(name,setKickReason,deferrals)
+    local player = source
+    local identifiers = CZGetIdentifiers(player)
+    deferrals.defer()
+
+    Wait(0)
+
+    deferrals.update(string.format("Hello %s. Your %s ID is being checked.", name,Config.identifer))
+
+    Wait(100)
+
+    if not identifiers[Config.identifer] then
+        deferrals.done("Your "..Config.identifer.." ID is not connected.")
+    else
+        deferrals.done()
+    end
+end)
 
 function CZDuplicateObject(orig,copies)
     copies = copies or {}
