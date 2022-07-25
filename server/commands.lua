@@ -1,3 +1,4 @@
+Commands = {}
 CZ.Command = function(permission,command,cb,suggestions)
     if permission then
         RegisterCommand(command, cb, true)
@@ -6,7 +7,8 @@ CZ.Command = function(permission,command,cb,suggestions)
         RegisterCommand(command, cb, false)
     end
     if suggestions and suggestions.HelpText then
-        TriggerClientEvent('chat:addSuggestion', -1,'/'..command, suggestions.HelpText,suggestions.Suggestions)
+        table.insert(Commands,{command,suggestions.HelpText,suggestions.Suggestions})
+        TriggerClientEvent('chat:addSuggestion', source,'/'..command, suggestions.HelpText,suggestions.Suggestions)
     end
 end
 
@@ -143,7 +145,7 @@ local commands = {
             }
         },
         func = function (source,args,rawcommand)
-            if #args[3] then
+            if #args == 3 then
                 local to = args[1]
                 if args[1] == "me" then
                     to = source
@@ -184,6 +186,14 @@ local commands = {
     }
 }
 
-for k,v in pairs(commands)do
-    CZ.Command(v.permission,v.name,v.func,v.suggestion)
+function LoadAllSuggestion(source)
+    for k,v in pairs(Commands) do
+        TriggerClientEvent('chat:addSuggestion', source,'/'..v[1], v[2],v[3])
+    end
 end
+
+Citizen.CreateThread(function()
+    for k,v in pairs(commands)do
+        CZ.Command(v.permission,v.name,v.func,v.suggestion)
+    end
+end)

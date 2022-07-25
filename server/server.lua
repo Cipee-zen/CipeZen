@@ -44,6 +44,7 @@ AddEventHandler("CZ:requestExistCallback", function(_idcallback,callbackname,...
     end
 end)
 AddEventHandler("CipeZen:playerLoad",function()
+    LoadAllSuggestion(source)
     local license = CZGetIdentifiers(source)[Config.identifer]
     if not CZPlayersLoad[license] then
         CZPlayersLoad[license] = true
@@ -434,6 +435,18 @@ function CZEditUniqueItem(id,name,label,weight,description,other)
         if other then
             other = json.encode(other)
         end
+        local uniqItem = CZGetUniqueItem(tid)
+        if uniqItem.owner then
+            local player = CipeZenPlayers[uniqItem.owner]
+            if player then
+                player.Inventory[tid] = CipeZenUniqueItems[tid]
+                MySQL.Async.execute('UPDATE players SET inventory = @inventory WHERE rockstarlicense = @rockstarlicense', {
+                    ["@rockstarlicense"] = uniqItem.owner,
+                    ["@inventory"] = json.encode(player.Inventory)
+                })
+            end
+        end
+
         MySQL.Async.execute('UPDATE uniqueitems SET name = @name,label = @label,weight = @weight,description = @description,other = @other WHERE id = @id', {
             ["@name"] = name,
             ["@label"] = label,
