@@ -457,6 +457,7 @@ function CZEditUniqueItem(id,name,label,weight,description,other)
             local player = CipeZenPlayers[uniqItem.owner]
             if player then
                 player.Inventory[tid] = CipeZenUniqueItems[tid]
+                player.Inventory[tid].count = 1
                 MySQL.Async.execute('UPDATE players SET inventory = @inventory WHERE rockstarlicense = @rockstarlicense', {
                     ["@rockstarlicense"] = uniqItem.owner,
                     ["@inventory"] = json.encode(player.Inventory)
