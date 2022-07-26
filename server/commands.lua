@@ -7,8 +7,11 @@ CZ.Command = function(permission,command,cb,suggestions)
         RegisterCommand(command, cb, false)
     end
     if suggestions and suggestions.HelpText then
+        if not suggestions.Suggestions then
+            suggestions.Suggestions = {}
+        end
         table.insert(Commands,{command,suggestions.HelpText,suggestions.Suggestions})
-        TriggerClientEvent('chat:addSuggestion', source,'/'..command, suggestions.HelpText,suggestions.Suggestions)
+        TriggerClientEvent('chat:addSuggestion', -1,'/'..command, suggestions.HelpText,suggestions.Suggestions)
     end
 end
 
